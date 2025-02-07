@@ -23,6 +23,7 @@ public class MessageCounter
             }
 
             currentUser.Messages++;
+            currentUser.Points += CalculatePoints(type);
             await db.SaveChangesAsync();
         }
     }
@@ -36,5 +37,10 @@ public class MessageCounter
         if (type == MessageType.Photo) return 30;
         if (type == MessageType.Location) return 40;
         return 15;
+    }
+
+    public long CalculateLevel(long points, long level)
+    {
+        return 0;
     }
 }
