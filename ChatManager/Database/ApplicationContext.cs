@@ -9,10 +9,10 @@ public class Chat
 {
     public int Id { get; set; }
     public long ChatId { get; set; }
-    public List<Users>? Users { get; set; }
+    public List<User>? Users { get; set; } = new List<User>();
 }
 
-public class Users
+public class User
 {
     public int Id { get; set; }
     public string UserName { get; set; } = string.Empty;
@@ -20,8 +20,9 @@ public class Users
     public long Level { get; set; } = 1;
     public long Points { get; set; }
     public bool IsAdmin { get; set; }
-    public Chat Chat { get; set; }
     public int ChatId { get; set; }
+    public long UserId { get; set; }
+    public Chat Chat { get; set; }
 }
 
 public class ApplicationContext : DbContext
@@ -40,14 +41,11 @@ public class ApplicationContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Chat>()
-            .HasMany(c => c.Users);
-        
-        modelBuilder.Entity<Chat>()
-            .HasMany(p => p.Users)
+            .HasMany(u => u.Users)
             .WithOne(i => i.Chat)
             .HasForeignKey(i => i.ChatId);
         
-        modelBuilder.Entity<Users>()
+        modelBuilder.Entity<User>()
             .HasIndex(i => i.ChatId);
     }
 }
