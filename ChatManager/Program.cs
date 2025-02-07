@@ -18,7 +18,7 @@ cts.Cancel();
 async Task OnMessage(Message msg, UpdateType type)
 {
     if (msg.Text is null) return;
-    await messageHandler.MessageCounterAsync(msg);
+    await messageHandler.MessageCounterAsync(bot, msg, msg.Type);
     var commandParts = msg.Text.Split(' ');
     var command = commandParts[0];
     var argument = commandParts.Length >= 2 ? commandParts[1] : null;

@@ -1,4 +1,6 @@
-﻿namespace ChatManager.Manager;
+﻿using Telegram.Bot.Types.Enums;
+
+namespace ChatManager.Manager;
 using Microsoft.EntityFrameworkCore;
 using Telegram.Bot;
 using Telegram.Bot.Types;
@@ -6,7 +8,7 @@ using ChatManager.Database;
 
 public class MessageCounter
 {
-    public async Task MessageCounterAsync(Message msg)
+    public async Task MessageCounterAsync(ITelegramBotClient botClient,Message msg, MessageType type)
     {
         using (ApplicationContext db = new ApplicationContext())
         {
@@ -23,5 +25,16 @@ public class MessageCounter
             currentUser.Messages++;
             await db.SaveChangesAsync();
         }
+    }
+
+    private long CalculatePoints(MessageType type)
+    {
+        if (type == MessageType.Text) return 5;
+        if (type == MessageType.Audio) return 10;
+        if (type == MessageType.Video) return 20;
+        if (type == MessageType.Sticker) return 25;
+        if (type == MessageType.Photo) return 30;
+        if (type == MessageType.Location) return 40;
+        return 15;
     }
 }
