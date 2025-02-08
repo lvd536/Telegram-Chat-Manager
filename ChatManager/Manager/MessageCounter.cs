@@ -24,6 +24,12 @@ public class MessageCounter
 
             currentUser.Messages++;
             currentUser.Points += CalculatePoints(type);
+            await botClient.SendMessage(msg.Chat.Id, $"У вас {currentUser.Points} поинтов и {currentUser.Level} уровень", ParseMode.Html);
+            if (currentUser.Points >= CalculateLevel(currentUser.Level))
+            {
+                currentUser.Level++;
+                await botClient.SendMessage(msg.Chat.Id, $"Поздравляю, {msg?.From?.FirstName}! Вы получили {currentUser.Level} уровень!", ParseMode.Html);
+            }
             await db.SaveChangesAsync();
         }
     }
@@ -39,8 +45,24 @@ public class MessageCounter
         return 15;
     }
 
-    public long CalculateLevel(long points, long level)
+    public long CalculateLevel(long level)
     {
-        return 0;
+        if (level <= 5) return (1500 * level);
+        else if (level <= 10) return (250 * level);
+        else if (level <= 20) return (350 * level);
+        else if (level <= 30) return (550 * level);
+        else if (level <= 40) return (750 * level);
+        else if (level <= 50) return (950 * level); 
+        else if (level <= 60) return (1150 * level);
+        else if (level <= 70) return (1350 * level);
+        else if (level <= 80) return (1550 * level);
+        else if (level <= 90) return (1750 * level);
+        else if (level <= 100) return (1950 * level);
+        else if (level <= 150) return (2500 * level);
+        else if (level <= 160) return (2700 * level);
+        else if (level <= 170) return (2900 * level);
+        else if (level <= 180) return (3100 * level);
+        else if (level <= 190) return (3300 * level);
+        else return (4000 * level);
     }
 }

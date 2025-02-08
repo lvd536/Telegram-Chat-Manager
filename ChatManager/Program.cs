@@ -1,4 +1,5 @@
 ﻿using ChatManager.Manager;
+using ChatManager.Manager.Commands;
 using Telegram.Bot;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
@@ -8,6 +9,7 @@ using var cts = new CancellationTokenSource();
 var bot = new TelegramBotClient("7371147310:AAEwln2CDIWVzYNTFHMdUwbzyzHod1qgDDQ", cancellationToken: cts.Token);
 var me = await bot.GetMe();
 var messageHandler = new MessageCounter();
+var startCommand = new StartCommand();
 bot.OnMessage += OnMessage;
 bot.OnUpdate += OnCallbackQuery;
 bot.OnError += OnError;
@@ -17,7 +19,7 @@ cts.Cancel();
 
 async Task OnMessage(Message msg, UpdateType type)
 {
-    if (msg.Text is null) return;
+    /*if (msg.Text is null) return;*/
     await messageHandler.MessageCounterAsync(bot, msg, msg.Type);
     var commandParts = msg.Text.Split(' ');
     var command = commandParts[0];
@@ -27,7 +29,9 @@ async Task OnMessage(Message msg, UpdateType type)
     {
         switch (command)
         {
-
+            case "/start":
+                await startCommand.StartCmd(bot, msg);
+                break;
         }
     }
 
