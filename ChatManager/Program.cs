@@ -11,6 +11,7 @@ var me = await bot.GetMe();
 var messageHandler = new MessageCounter();
 var startCommand = new StartCommand();
 var profileCommand = new ProfileCommand();
+var topCommand = new TopCommand();
 bot.OnMessage += OnMessage;
 bot.OnUpdate += OnCallbackQuery;
 bot.OnError += OnError;
@@ -38,6 +39,9 @@ async Task OnMessage(Message msg, UpdateType type)
                 break;
             case "/profile":
                 await profileCommand.ProfileCmd(bot, msg);
+                break;
+            case "/top":
+                await topCommand.TopCmd(bot, msg);
                 break;
         }
     }
