@@ -17,6 +17,13 @@ public class User
     public int Id { get; set; }
     public string UserName { get; set; } = string.Empty;
     public long Messages { get; set; }
+    public long TextMessages { get; set; }
+    public long AudioMessages { get; set; }
+    public long VideoMessages { get; set; }
+    public long StickerMessages { get; set; }
+    public long PhotoMessages { get; set; }
+    public long LocationMessages { get; set; }
+    public long OtherMessages { get; set; }
     public long Level { get; set; } = 1;
     public long Points { get; set; }
     public bool IsAdmin { get; set; }

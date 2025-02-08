@@ -23,6 +23,12 @@ public class MessageCounter
             }
 
             currentUser.Messages++;
+            if (type == MessageType.Audio) currentUser.AudioMessages++;
+            else if (type == MessageType.Video) currentUser.VideoMessages++;
+            else if (type == MessageType.Sticker) currentUser.StickerMessages++;
+            else if (type == MessageType.Photo) currentUser.PhotoMessages++;
+            else if (type == MessageType.Location) currentUser.LocationMessages++;
+            else currentUser.OtherMessages++;
             currentUser.Points += CalculatePoints(type);
             if (currentUser.Points >= CalculateLevel(currentUser.Level))
             {
