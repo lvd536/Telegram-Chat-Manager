@@ -10,6 +10,7 @@ var bot = new TelegramBotClient("7371147310:AAEwln2CDIWVzYNTFHMdUwbzyzHod1qgDDQ"
 var me = await bot.GetMe();
 var messageHandler = new MessageCounter();
 var startCommand = new StartCommand();
+var profileCommand = new ProfileCommand();
 bot.OnMessage += OnMessage;
 bot.OnUpdate += OnCallbackQuery;
 bot.OnError += OnError;
@@ -34,6 +35,9 @@ async Task OnMessage(Message msg, UpdateType type)
                 break;
             case "/id":
                 await bot.SendMessage(msg.Chat.Id, $"ID пользователя {msg.From.FirstName}: {msg.From.Id}", ParseMode.Html);
+                break;
+            case "/profile":
+                await profileCommand.ProfileCmd(bot, msg);
                 break;
         }
     }

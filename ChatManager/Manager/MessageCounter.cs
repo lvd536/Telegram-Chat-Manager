@@ -24,6 +24,7 @@ public class MessageCounter
 
             currentUser.Messages++;
             if (type == MessageType.Audio) currentUser.AudioMessages++;
+            else if (type == MessageType.Text) currentUser.TextMessages++;
             else if (type == MessageType.Video) currentUser.VideoMessages++;
             else if (type == MessageType.Sticker) currentUser.StickerMessages++;
             else if (type == MessageType.Photo) currentUser.PhotoMessages++;
