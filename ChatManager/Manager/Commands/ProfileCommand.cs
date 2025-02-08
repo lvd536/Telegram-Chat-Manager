@@ -16,17 +16,17 @@ public class ProfileCommand
                 .Include(u => u.Users)
                 .FirstOrDefault(c => c.ChatId == msg.Chat.Id);
             var currentUser = userData.Users.FirstOrDefault(u => u.UserId == msg.From.Id);
-            var message = $"Профиль пользователя {msg.From.FirstName}" +
-                          $"Уровень: {currentUser.Level}" +
-                          $"Опыт: {currentUser.Points}" +
-                          $"Всего сообщений: {currentUser.Messages}" +
-                          $"Текстовых сообщений: {currentUser.TextMessages}" +
-                          $"Голосовых сообщений: {currentUser.AudioMessages}" +
-                          $"Кружков: {currentUser.VideoMessages}" +
-                          $"Стикеров: {currentUser.StickerMessages}" +
-                          $"Фото: {currentUser.PhotoMessages}" +
-                          $"Гео: {currentUser.LocationMessages}" +
-                          $"Других: {currentUser.OtherMessages}";
+            var message = $"<blockquote>Профиль пользователя {msg.From.FirstName}\n" +
+                          $"Уровень: {currentUser.Level}\n" +
+                          $"Опыт: {currentUser.Points}\n" +
+                          $"Всего сообщений: {currentUser.Messages}\n" +
+                          $"Текстовых сообщений: {currentUser.TextMessages}\n" +
+                          $"Голосовых сообщений: {currentUser.AudioMessages}\n" +
+                          $"Кружков: {currentUser.VideoMessages}\n" +
+                          $"Стикеров: {currentUser.StickerMessages}\n" +
+                          $"Фото: {currentUser.PhotoMessages}\n" +
+                          $"Гео: {currentUser.LocationMessages}\n" +
+                          $"Других: {currentUser.OtherMessages} </blockquote>";
             await botClient.SendMessage(msg.Chat.Id, message, ParseMode.Html);
         }
     }
