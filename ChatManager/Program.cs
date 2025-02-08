@@ -19,8 +19,8 @@ cts.Cancel();
 
 async Task OnMessage(Message msg, UpdateType type)
 {
-    /*if (msg.Text is null) return;*/
     await messageHandler.MessageCounterAsync(bot, msg, msg.Type);
+    if (msg.Text is null) return;
     var commandParts = msg.Text.Split(' ');
     var command = commandParts[0];
     var argument = commandParts.Length >= 2 ? commandParts[1] : null;
@@ -32,12 +32,11 @@ async Task OnMessage(Message msg, UpdateType type)
             case "/start":
                 await startCommand.StartCmd(bot, msg);
                 break;
+            case "/id":
+                await bot.SendMessage(msg.Chat.Id, $"ID пользователя {msg.From.FirstName}: {msg.From.Id}", ParseMode.Html);
+                break;
         }
     }
-
-    Console.WriteLine($"[Debug] Получено {type} '{msg.Text}' в {msg.Chat}");
-    Console.WriteLine($"От {msg.From?.FirstName}");
-    Console.WriteLine($"ID: {msg.From?.Id}");
 }
 
 async Task OnCallbackQuery(Update update)

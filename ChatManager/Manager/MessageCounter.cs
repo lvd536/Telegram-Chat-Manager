@@ -24,7 +24,6 @@ public class MessageCounter
 
             currentUser.Messages++;
             currentUser.Points += CalculatePoints(type);
-            await botClient.SendMessage(msg.Chat.Id, $"У вас {currentUser.Points} поинтов и {currentUser.Level} уровень", ParseMode.Html);
             if (currentUser.Points >= CalculateLevel(currentUser.Level))
             {
                 currentUser.Level++;
