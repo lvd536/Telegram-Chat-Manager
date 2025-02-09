@@ -52,6 +52,9 @@ async Task OnCallbackQuery(Update update)
     if (update.Type != UpdateType.CallbackQuery) return;
     switch (update.CallbackQuery?.Data)
     {
+        case "IdCall":
+            await bot.SendMessage(update.CallbackQuery.Message.Chat.Id, $"ID пользователя {update.CallbackQuery.From.FirstName}: {update.CallbackQuery.From?.Id}", ParseMode.Html);
+            break;
         case "TopByLevel":
             await topCommand.TopCmd(bot,update.CallbackQuery.Message ?? new Message(), 1);
             break;

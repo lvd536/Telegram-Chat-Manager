@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
+using Telegram.Bot.Types.ReplyMarkups;
 
 namespace ChatManager.Manager.Commands;
 
@@ -27,7 +28,10 @@ public class ProfileCommand
                           $"Фото: {currentUser.PhotoMessages}\n" +
                           $"Гео: {currentUser.LocationMessages}\n" +
                           $"Других: {currentUser.OtherMessages} </blockquote>";
-            await botClient.SendMessage(msg.Chat.Id, message, ParseMode.Html);
+            var keyboard = new InlineKeyboardMarkup()
+                .AddButton("Топ", "TopByLevel")
+                .AddButton("Узнать свой TG ID", "IdCall");
+            await botClient.SendMessage(msg.Chat.Id, message, ParseMode.Html, replyMarkup: keyboard);
         }
     }
 }
