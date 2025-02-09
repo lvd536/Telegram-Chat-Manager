@@ -19,23 +19,23 @@ public class TopCommand
             var users = userData.Users.ToList();
             var message = String.Empty;
             var keyboard = new InlineKeyboardMarkup()
-                .AddButton("Топ по уровню", "TopByLevel")
+                .AddButton("⭐️ Топ по уровню", "TopByLevel")
                 .AddNewRow()
-                .AddButton("Топ по всем сообщениям", "TopByMessages")
+                .AddButton("📊 Топ по всем сообщениям", "TopByMessages")
                 .AddNewRow()
-                .AddButton("Топ по текстовым сообщениям", "TopByTextMessages")
+                .AddButton("💬 Топ по текстовым сообщениям", "TopByTextMessages")
                 .AddNewRow()
-                .AddButton("Топ по голосовым", "TopByAudioMessages")
+                .AddButton("🎤 Топ по голосовым", "TopByAudioMessages")
                 .AddNewRow()
-                .AddButton("Топ по кружкам", "TopByVideoMessages")
+                .AddButton("⭕️ Топ по кружкам", "TopByVideoMessages")
                 .AddNewRow()
-                .AddButton("Топ по стикерам", "TopBySticker")
+                .AddButton("😀 Топ по стикерам", "TopBySticker")
                 .AddNewRow()
-                .AddButton("Топ по фото", "TopByPhoto")
+                .AddButton("📷 Топ по фото", "TopByPhoto")
                 .AddNewRow()
-                .AddButton("Топ по гео", "TopByLocation")
+                .AddButton("📍 Топ по гео", "TopByLocation")
                 .AddNewRow()
-                .AddButton("Топ по другим сообщениям", "TopByOther");
+                .AddButton("📦 Топ по другим сообщениям", "TopByOther");
             switch (type)
             {
                 case 1:

@@ -17,17 +17,17 @@ public class ProfileCommand
                 .Include(u => u.Users)
                 .FirstOrDefault(c => c.ChatId == msg.Chat.Id);
             var currentUser = userData.Users.FirstOrDefault(u => u.UserId == msg.From.Id);
-            var message = $"<blockquote>Профиль пользователя {msg.From.FirstName}\n" +
-                          $"Уровень: {currentUser.Level}\n" +
-                          $"Опыт: {currentUser.Points}\n" +
-                          $"Всего сообщений: {currentUser.Messages}\n" +
-                          $"Текстовых сообщений: {currentUser.TextMessages}\n" +
-                          $"Голосовых сообщений: {currentUser.AudioMessages}\n" +
-                          $"Кружков: {currentUser.VideoMessages}\n" +
-                          $"Стикеров: {currentUser.StickerMessages}\n" +
-                          $"Фото: {currentUser.PhotoMessages}\n" +
-                          $"Гео: {currentUser.LocationMessages}\n" +
-                          $"Других: {currentUser.OtherMessages} </blockquote>";
+            var message = $"<blockquote>👤 Профиль пользователя {msg.From.FirstName}\n" +
+                          $"⭐️ Уровень: {currentUser.Level}\n" +
+                          $"✨ Опыт: {currentUser.Points}\n" +
+                          $"📊 Всего сообщений: {currentUser.Messages}\n" +
+                          $"💬 Текстовых сообщений: {currentUser.TextMessages}\n" +
+                          $"🎤 Голосовых сообщений: {currentUser.AudioMessages}\n" +
+                          $"⭕️ Кружков: {currentUser.VideoMessages}\n" +
+                          $"😀 Стикеров: {currentUser.StickerMessages}\n" +
+                          $"📷 Фото: {currentUser.PhotoMessages}\n" +
+                          $"📍 Гео: {currentUser.LocationMessages}\n" +
+                          $"📦 Других: {currentUser.OtherMessages} </blockquote>";
             var keyboard = new InlineKeyboardMarkup()
                 .AddButton("Топ", "TopByLevel")
                 .AddButton("Узнать свой TG ID", "IdCall");
