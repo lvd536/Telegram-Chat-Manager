@@ -41,7 +41,7 @@ async Task OnMessage(Message msg, UpdateType type)
                 await profileCommand.ProfileCmd(bot, msg);
                 break;
             case "/top":
-                await topCommand.TopCmd(bot, msg);
+                await topCommand.TopCmd(bot, msg, 1);
                 break;
         }
     }
@@ -52,6 +52,33 @@ async Task OnCallbackQuery(Update update)
     if (update.Type != UpdateType.CallbackQuery) return;
     switch (update.CallbackQuery?.Data)
     {
+        case "TopByLevel":
+            await topCommand.TopCmd(bot,update.CallbackQuery.Message ?? new Message(), 1);
+            break;
+        case "TopByMessages":
+            await topCommand.TopCmd(bot, update.CallbackQuery.Message ?? new Message(), 2);
+            break;
+        case "TopByTextMessages":
+            await topCommand.TopCmd(bot,update.CallbackQuery.Message ?? new Message(), 3);
+            break;
+        case "TopByAudioMessages":
+            await topCommand.TopCmd(bot,update.CallbackQuery.Message ?? new Message(), 4);
+            break;
+        case "TopByVideoMessages":
+            await topCommand.TopCmd(bot,update.CallbackQuery.Message ?? new Message(), 5);
+            break;
+        case "TopBySticker":
+            await topCommand.TopCmd(bot,update.CallbackQuery.Message ?? new Message(), 6);
+            break;
+        case "TopByPhoto":
+            await topCommand.TopCmd(bot,update.CallbackQuery.Message ?? new Message(), 7);
+            break;
+        case "TopByLocation":
+            await topCommand.TopCmd(bot,update.CallbackQuery.Message ?? new Message(), 8);
+            break;
+        case "TopByOther":
+            await topCommand.TopCmd(bot,update.CallbackQuery.Message ?? new Message(), 9);
+            break;
     }
 }
 
