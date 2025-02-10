@@ -27,6 +27,8 @@ public class User
     public long Level { get; set; } = 1;
     public long Points { get; set; }
     public bool IsAdmin { get; set; }
+    public short Warns { get; set; }
+    public string WarnsDescription { get; set; }
     public int ChatId { get; set; }
     public long UserId { get; set; }
     public Chat Chat { get; set; }
