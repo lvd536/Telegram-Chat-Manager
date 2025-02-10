@@ -56,7 +56,23 @@ async Task OnMessage(Message msg, UpdateType type)
                 }
                 break;
             case "/unmute":
-                await adminTools.UnmuteUser(bot, msg);
+                await adminTools.UnMuteUser(bot, msg);
+                break;
+            case "/ban":
+                try
+                {
+                    await adminTools.BanUser(bot, msg, int.Parse(argument));
+                }
+                catch (Exception)
+                {
+                    await bot.SendMessage(msg.Chat.Id, "Неверно или вовсе не указано значение. Пример: /ban 30 (мут на 30 минут)", ParseMode.Html);
+                }
+                break;
+            case "/unban":
+                await adminTools.UnBanUser(bot, msg);
+                break;
+            case "/kick":
+                await adminTools.KickUser(bot, msg);
                 break;
         }
     }
