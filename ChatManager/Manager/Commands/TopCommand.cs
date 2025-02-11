@@ -49,7 +49,7 @@ public class TopCommand
                         await botClient.EditMessageText(msg.Chat.Id, msg.Id, message, ParseMode.Html,
                             replyMarkup: keyboard);
                     }
-                    catch (Exception ex) {
+                    catch (Exception) {
                         await botClient.SendMessage(msg.Chat.Id, message, ParseMode.Html, replyMarkup: keyboard);
                     }
                     break;
@@ -64,7 +64,7 @@ public class TopCommand
                         await botClient.EditMessageText(msg.Chat.Id, msg.Id, message, ParseMode.Html,
                             replyMarkup: keyboard);
                     }
-                    catch (Exception ex) {
+                    catch (Exception) {
                         await botClient.SendMessage(msg.Chat.Id, message, ParseMode.Html, replyMarkup: keyboard);
                     }
                     break;
@@ -79,7 +79,7 @@ public class TopCommand
                         await botClient.EditMessageText(msg.Chat.Id, msg.Id, message, ParseMode.Html,
                             replyMarkup: keyboard);
                     }
-                    catch (Exception ex) {
+                    catch (Exception) {
                         await botClient.SendMessage(msg.Chat.Id, message, ParseMode.Html, replyMarkup: keyboard);
                     }
                     break;
@@ -94,7 +94,7 @@ public class TopCommand
                         await botClient.EditMessageText(msg.Chat.Id, msg.Id, message, ParseMode.Html,
                             replyMarkup: keyboard);
                     }
-                    catch (Exception ex) {
+                    catch (Exception) {
                         await botClient.SendMessage(msg.Chat.Id, message, ParseMode.Html, replyMarkup: keyboard);
                     }
                     break;
@@ -109,7 +109,7 @@ public class TopCommand
                         await botClient.EditMessageText(msg.Chat.Id, msg.Id, message, ParseMode.Html,
                             replyMarkup: keyboard);
                     }
-                    catch (Exception ex) {
+                    catch (Exception) {
                         await botClient.SendMessage(msg.Chat.Id, message, ParseMode.Html, replyMarkup: keyboard);
                     }
                     break;
@@ -124,7 +124,7 @@ public class TopCommand
                         await botClient.EditMessageText(msg.Chat.Id, msg.Id, message, ParseMode.Html,
                             replyMarkup: keyboard);
                     }
-                    catch (Exception ex) {
+                    catch (Exception) {
                         await botClient.SendMessage(msg.Chat.Id, message, ParseMode.Html, replyMarkup: keyboard);
                     }
                     break;
@@ -139,7 +139,7 @@ public class TopCommand
                         await botClient.EditMessageText(msg.Chat.Id, msg.Id, message, ParseMode.Html,
                             replyMarkup: keyboard);
                     }
-                    catch (Exception ex) {
+                    catch (Exception) {
                         await botClient.SendMessage(msg.Chat.Id, message, ParseMode.Html, replyMarkup: keyboard);
                     }
                     break;
@@ -154,7 +154,7 @@ public class TopCommand
                         await botClient.EditMessageText(msg.Chat.Id, msg.Id, message, ParseMode.Html,
                             replyMarkup: keyboard);
                     }
-                    catch (Exception ex) {
+                    catch (Exception) {
                         await botClient.SendMessage(msg.Chat.Id, message, ParseMode.Html, replyMarkup: keyboard);
                     }
                     break;
@@ -169,7 +169,7 @@ public class TopCommand
                         await botClient.EditMessageText(msg.Chat.Id, msg.Id, message, ParseMode.Html,
                             replyMarkup: keyboard);
                     }
-                    catch (Exception ex) {
+                    catch (Exception) {
                         await botClient.SendMessage(msg.Chat.Id, message, ParseMode.Html, replyMarkup: keyboard);
                     }
                     break;
