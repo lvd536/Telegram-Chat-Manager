@@ -1,7 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
-using Telegram.Bot.Types;
+﻿namespace ChatManager.Database;
 
-namespace ChatManager.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 
@@ -26,20 +24,36 @@ public class User
     public long OtherMessages { get; set; }
     public long Level { get; set; } = 1;
     public long Points { get; set; }
-    public bool IsAdmin { get; set; }
-    public short Warns { get; set; }
-    public string WarnsDescription { get; set; }
-    public int ChatId { get; set; }
     public long UserId { get; set; }
-    public Chat Chat { get; set; }
+    public int ChatId { get; set; }
+    public bool IsAdmin { get; set; }
+    public Chat Chat { get; set; } = null!;
+    public Warn Warn { get; set; } = null!;
+}
+
+public class Warn
+{
+    public int Id { get; set; }
+    public short Warns { get; set; }
+    public string OneDescription { get; set; } = string.Empty;
+    public string TwoDescription { get; set; } = string.Empty;
+    public string ThreeDescription { get; set; } = string.Empty;
+    public int UserId { get; set; }
+    public User User { get; set; } = null!;
 }
 
 public class ApplicationContext : DbContext
 {
     public DbSet<Chat> Chats => Set<Chat>();
+
     public ApplicationContext()
     {
         Database.Migrate();
+    }
+
+    public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options)
+    {
+        
     }
     
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -56,16 +70,23 @@ public class ApplicationContext : DbContext
         
         modelBuilder.Entity<User>()
             .HasIndex(i => i.ChatId);
+
+        modelBuilder.Entity<User>()
+            .HasOne(i => i.Warn)
+            .WithOne(w => w.User)
+            .HasForeignKey<Warn>(w => w.UserId);
+        
+        modelBuilder.Entity<Warn>()
+            .HasIndex(w => w.UserId);
     }
 }
 
-public class SampleContextFactory : IDesignTimeDbContextFactory<ApplicationContext>
+public class ApplicationContextFactory : IDesignTimeDbContextFactory<ApplicationContext>
 {
     public ApplicationContext CreateDbContext(string[] args)
     {
         var optionsBuilder = new DbContextOptionsBuilder<ApplicationContext>();
         optionsBuilder.UseSqlite("Data Source=database.db");
-        
-        return new ApplicationContext();
+        return new ApplicationContext(optionsBuilder.Options);
     }
 }

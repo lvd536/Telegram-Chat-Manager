@@ -8,13 +8,13 @@ using ChatManager.Database;
 
 public class MessageCounter
 {
-    public async Task MessageCounterAsync(ITelegramBotClient botClient,Message msg, MessageType type)
+    public async Task MessageCounterAsync(ITelegramBotClient botClient, Message msg, MessageType type)
     {
         using (ApplicationContext db = new ApplicationContext())
         {
-            var userData = db.Chats
-                .Include(u => u.Users)
-                .FirstOrDefault(u => u.ChatId == msg.Chat.Id);
+            var userData = await db.Chats
+                .Include(c => c.Users)
+                .FirstOrDefaultAsync(u => u.ChatId == msg.Chat.Id);
             var currentUser = userData?.Users?.FirstOrDefault(u => u.UserId == msg.From?.Id);
             if (userData is null || currentUser is null)
             {
@@ -51,7 +51,7 @@ public class MessageCounter
         return 15;
     }
 
-    public long CalculateLevel(long level)
+    private long CalculateLevel(long level)
     {
         if (level <= 5) return (1500 * level);
         else if (level <= 10) return (250 * level);

@@ -33,7 +33,8 @@ public class DbMethods
                 {
                     UserName = message.From.FirstName,
                     UserId = message.From.Id, 
-                    IsAdmin = message.From.Id == 1016623551 ? true : false
+                    IsAdmin = message.From.Id == 1016623551 ? true : false,
+                    Warn = new Warn()
                 };
                 userData.Users.Add(newUser);
                 await db.SaveChangesAsync();

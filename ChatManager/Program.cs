@@ -52,8 +52,10 @@ async Task OnMessage(Message msg, UpdateType type)
                 }
                 catch (Exception)
                 {
-                    await bot.SendMessage(msg.Chat.Id, "Неверно или вовсе не указано значение. Пример: /mute 30 (мут на 30 минут)", ParseMode.Html);
+                    await bot.SendMessage(msg.Chat.Id,
+                        "Неверно или вовсе не указано значение. Пример: /mute 30 (мут на 30 минут)", ParseMode.Html);
                 }
+
                 break;
             case "/unmute":
                 await adminTools.UnMuteUser(bot, msg);
@@ -65,8 +67,10 @@ async Task OnMessage(Message msg, UpdateType type)
                 }
                 catch (Exception)
                 {
-                    await bot.SendMessage(msg.Chat.Id, "Неверно или вовсе не указано значение. Пример: /ban 30 (мут на 30 минут)", ParseMode.Html);
+                    await bot.SendMessage(msg.Chat.Id,
+                        "Неверно или вовсе не указано значение. Пример: /ban 30 (мут на 30 минут)", ParseMode.Html);
                 }
+
                 break;
             case "/unban":
                 await adminTools.UnBanUser(bot, msg);
@@ -75,7 +79,12 @@ async Task OnMessage(Message msg, UpdateType type)
                 await adminTools.KickUser(bot, msg);
                 break;
             case "/warn":
-                await adminTools.WarnUser(bot, msg);
+                if (argument is null)
+                {
+                    await adminTools.WarnUser(bot, msg);
+                }
+                else await adminTools.WarnUser(bot, msg, argument);
+
                 break;
             case "/unwarn":
                 await adminTools.UnWarnUser(bot, msg);
