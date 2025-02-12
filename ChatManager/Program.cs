@@ -89,6 +89,9 @@ async Task OnMessage(Message msg, UpdateType type)
             case "/unwarn":
                 await adminTools.UnWarnUser(bot, msg);
                 break;
+            case "/info":
+                await adminTools.UserInfo(bot, msg);
+                break;
         }
     }
 }

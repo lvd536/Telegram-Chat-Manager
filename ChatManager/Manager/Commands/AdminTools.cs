@@ -265,4 +265,45 @@ public class AdminTools
             }
         }
     }
+
+    public async Task UserInfo(ITelegramBotClient botClient, Message msg)
+    {
+        var member = await botClient.GetChatMember(msg.Chat.Id, msg.From.Id);
+        if (msg.ReplyToMessage is null) return;
+        if (member.Status != ChatMemberStatus.Administrator && member.Status != ChatMemberStatus.Creator)
+        {
+            await botClient.SendMessage(msg.Chat.Id, "У вас недостаточно прав чтобы использовать эту комманду.",
+                ParseMode.Html);
+            return;
+        }
+        using (ApplicationContext db = new ApplicationContext())
+        {
+            var userData = db.Chats
+                .Include(u => u.Users)
+                .ThenInclude(u => u.Warn)
+                .FirstOrDefault(u => u.ChatId == msg.Chat.Id);
+            var currentUser = userData?.Users?
+                .FirstOrDefault(u => u.UserId == msg.ReplyToMessage.From?.Id);
+            var message = $"Информация о пользователе: {msg.ReplyToMessage.From?.FirstName}:\n" +
+                          $"ID: {msg.ReplyToMessage.From?.Id}\n" +
+                          $"Tag: {msg.ReplyToMessage.From?.Username}\n" +
+                          $"Кол-во предупреждений: {currentUser.Warn.Warns}\n";
+            switch (currentUser.Warn.Warns)
+            {
+                case 1:
+                    message += $"Причина первого предупреждения: {currentUser.Warn.OneDescription}";
+                    break;
+                case 2:
+                    message += $"Причина первого предупреждения: {currentUser.Warn.OneDescription}\n" +
+                               $"Причина второго предупреждения: {currentUser.Warn.TwoDescription}";
+                    break;
+                case 3:
+                    message += $"Причина первого предупреждения: {currentUser.Warn.OneDescription}\n" +
+                               $"Причина второго предупреждения: {currentUser.Warn.TwoDescription}\n"+
+                               $"Причина третьего предупреждения: {currentUser.Warn.ThreeDescription}";
+                    break;
+            }
+            await botClient.SendMessage(msg.Chat.Id, "<blockquote>" + message + "</blockquote>", ParseMode.Html);
+        }
+    }
 }
