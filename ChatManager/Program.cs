@@ -13,6 +13,7 @@ var startCommand = new StartCommand();
 var profileCommand = new ProfileCommand();
 var topCommand = new TopCommand();
 var adminTools = new AdminTools();
+var helpCommand = new HelpCommand();
 bot.OnMessage += OnMessage;
 bot.OnUpdate += OnCallbackQuery;
 bot.OnError += OnError;
@@ -103,6 +104,9 @@ async Task OnMessage(Message msg, UpdateType type)
                 break;
             case "/info":
                 await adminTools.UserInfo(bot, msg);
+                break;
+            case "/help":
+                await helpCommand.HelpCmd(bot, msg);
                 break;
         }
     }
