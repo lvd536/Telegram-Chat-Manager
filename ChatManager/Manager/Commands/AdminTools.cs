@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
-using User = ChatManager.Database.User;
 
 namespace ChatManager.Manager.Commands;
 

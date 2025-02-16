@@ -4,7 +4,7 @@ namespace ChatManager.Manager;
 using Microsoft.EntityFrameworkCore;
 using Telegram.Bot;
 using Telegram.Bot.Types;
-using ChatManager.Database;
+using Database;
 
 public class MessageCounter
 {

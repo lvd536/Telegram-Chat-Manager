@@ -1,6 +1,4 @@
-﻿using Telegram.Bot.Types;
-
-namespace ChatManager.Database;
+﻿namespace ChatManager.Database;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
