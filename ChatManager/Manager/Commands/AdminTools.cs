@@ -19,22 +19,49 @@ public class AdminTools
                 ParseMode.Html);
             return;
         }
-        await botClient.RestrictChatMember(msg.Chat.Id, msg.ReplyToMessage.From.Id, new ChatPermissions()
+
+        using (ApplicationContext db = new ApplicationContext())
         {
-            CanSendMessages = false,
-            CanSendOtherMessages = false,
-            CanAddWebPagePreviews = false,
-            CanSendVoiceNotes = false,
-            CanSendDocuments = false,
-            CanPinMessages = false,
-            CanSendPhotos = false,
-            CanSendAudios = false,
-            CanSendVideos = false,
-            CanSendPolls = false,
-            CanSendVideoNotes = false
-        }, untilDate: DateTime.UtcNow.AddMinutes(duration));
-        await botClient.SendMessage(msg.Chat.Id,
-            $"Успешно выдал мут пользователю {msg.ReplyToMessage.From.FirstName} на {duration} минут!");
+            var userData = db.Chats
+                .Include(u => u.Users)
+                .ThenInclude(u => u.Mutes)
+                .FirstOrDefault(u => u.ChatId == msg.Chat.Id);
+            var currentUser = userData?.Users?.FirstOrDefault(u => u.UserId == msg.ReplyToMessage.From?.Id);
+            if (currentUser is null || userData is null)
+            {
+                await DbMethods.InitializeUserAsync(msg);
+                userData = db.Chats
+                    .Include(u => u.Users)
+                    .ThenInclude(u => u.Mutes)
+                    .FirstOrDefault(u => u.ChatId == msg.Chat.Id);
+                currentUser = userData?.Users?.FirstOrDefault(u => u.UserId == msg.ReplyToMessage.From?.Id);
+            }
+
+            if (currentUser.Mutes == null) currentUser.Mutes = new List<Mute>();
+
+            var mute = new Mute
+            {
+                Description = description + $" | Продолжительность: {duration}"
+            };
+            currentUser.Mutes.Add(mute);
+            await db.SaveChangesAsync();
+            await botClient.RestrictChatMember(msg.Chat.Id, msg.ReplyToMessage.From.Id, new ChatPermissions()
+            {
+                CanSendMessages = false,
+                CanSendOtherMessages = false,
+                CanAddWebPagePreviews = false,
+                CanSendVoiceNotes = false,
+                CanSendDocuments = false,
+                CanPinMessages = false,
+                CanSendPhotos = false,
+                CanSendAudios = false,
+                CanSendVideos = false,
+                CanSendPolls = false,
+                CanSendVideoNotes = false
+            }, untilDate: DateTime.UtcNow.AddMinutes(duration));
+            await botClient.SendMessage(msg.Chat.Id,
+                $"Успешно выдал мут пользователю {msg.ReplyToMessage.From.FirstName} на {duration} минут!");
+        }
     }
 
     public async Task UnMuteUser(ITelegramBotClient botClient, Message msg)
@@ -76,10 +103,34 @@ public class AdminTools
                 ParseMode.Html);
             return;
         }
-        await botClient.BanChatMember(msg.Chat.Id, msg.ReplyToMessage.From.Id);
-        await botClient.UnbanChatMember(msg.Chat.Id, msg.ReplyToMessage.From.Id);
-        await botClient.SendMessage(msg.Chat.Id, $"Пользователь {msg.ReplyToMessage.From.FirstName} успешно кикнут!",
-            ParseMode.Html);
+
+        using (ApplicationContext db = new ApplicationContext())
+        {
+            var userData = db.Chats
+                .Include(u => u.Users)
+                .ThenInclude(u => u.Kick)
+                .FirstOrDefault(u => u.ChatId == msg.Chat.Id);
+            var currentUser = userData?.Users?.FirstOrDefault(u => u.UserId == msg.ReplyToMessage.From?.Id);
+            if (currentUser is null || userData is null)
+            {
+                await DbMethods.InitializeUserAsync(msg);
+                userData = db.Chats
+                    .Include(u => u.Users)
+                    .ThenInclude(u => u.Kick)
+                    .FirstOrDefault(u => u.ChatId == msg.Chat.Id);
+                currentUser = userData?.Users?.FirstOrDefault(u => u.UserId == msg.ReplyToMessage.From?.Id);
+            }
+
+            if (currentUser.Kick == null) currentUser.Kick = new Kick();
+
+            currentUser.Kick.Description = description;
+            await db.SaveChangesAsync();
+            await botClient.BanChatMember(msg.Chat.Id, msg.ReplyToMessage.From.Id);
+            await botClient.UnbanChatMember(msg.Chat.Id, msg.ReplyToMessage.From.Id);
+            await botClient.SendMessage(msg.Chat.Id,
+                $"Пользователь {msg.ReplyToMessage.From.FirstName} успешно кикнут!",
+                ParseMode.Html);
+        }
     }
 
     public async Task BanUser(ITelegramBotClient botClient, Message msg, int duration, string description)
@@ -92,10 +143,35 @@ public class AdminTools
                 ParseMode.Html);
             return;
         }
-        await botClient.BanChatMember(msg.Chat.Id, msg.ReplyToMessage.From.Id,
+
+        using (ApplicationContext db = new ApplicationContext())
+        {
+            var userData = db.Chats
+                .Include(u => u.Users)
+                .ThenInclude(u => u.Ban)
+                .FirstOrDefault(u => u.ChatId == msg.Chat.Id);
+            var currentUser = userData?.Users?.FirstOrDefault(u => u.UserId == msg.ReplyToMessage.From?.Id);
+            if (currentUser is null || userData is null)
+            {
+                await DbMethods.InitializeUserAsync(msg);
+                userData = db.Chats
+                    .Include(u => u.Users)
+                    .ThenInclude(u => u.Ban)
+                    .FirstOrDefault(u => u.ChatId == msg.Chat.Id);
+                currentUser = userData?.Users?.FirstOrDefault(u => u.UserId == msg.ReplyToMessage.From?.Id);
+            }
+
+            if (currentUser.Ban == null) currentUser.Ban = new Ban();
+
+            currentUser.Ban.Description = description;
+            await db.SaveChangesAsync();
+
+            await botClient.BanChatMember(msg.Chat.Id, msg.ReplyToMessage.From.Id,
             untilDate: DateTime.UtcNow.AddMinutes(duration));
-        await botClient.SendMessage(msg.Chat.Id, $"Пользователь {msg.ReplyToMessage.From.FirstName} успешно забанен!",
-            ParseMode.Html);
+            await botClient.SendMessage(msg.Chat.Id,
+                $"Пользователь {msg.ReplyToMessage.From.FirstName} успешно забанен!",
+                ParseMode.Html);
+        }
     }
 
     public async Task UnBanUser(ITelegramBotClient botClient, Message msg)
@@ -108,11 +184,13 @@ public class AdminTools
                 ParseMode.Html);
             return;
         }
-
+        
         await botClient.UnbanChatMember(msg.Chat.Id, msg.ReplyToMessage.From.Id);
-        await botClient.SendMessage(msg.Chat.Id, $"Пользователь {msg.ReplyToMessage.From.FirstName} успешно разбанен!",
+        await botClient.SendMessage(msg.Chat.Id,
+            $"Пользователь {msg.ReplyToMessage.From.FirstName} успешно разбанен!",
             ParseMode.Html);
     }
+
     public async Task WarnUser(ITelegramBotClient botClient, Message msg, string description)
     {
         var member = await botClient.GetChatMember(msg.Chat.Id, msg.From.Id);
@@ -123,6 +201,7 @@ public class AdminTools
                 ParseMode.Html);
             return;
         }
+
         using (ApplicationContext db = new ApplicationContext())
         {
             var userData = db.Chats
@@ -139,7 +218,7 @@ public class AdminTools
                     .FirstOrDefault(u => u.ChatId == msg.Chat.Id);
                 currentUser = userData?.Users?.FirstOrDefault(u => u.UserId == msg.ReplyToMessage.From?.Id);
             }
-            
+
             if (currentUser.Warns == null) currentUser.Warns = new List<Warn>();
 
             var warn = new Warn
@@ -152,9 +231,9 @@ public class AdminTools
             {
                 currentUser.Warns.Clear();
                 await db.SaveChangesAsync();
-                //await BanUser(botClient, msg, 4320);
+                await BanUser(botClient, msg, 4320, "3/3 предупреждений");
                 await botClient.SendMessage(msg.Chat.Id,
-                    $"Пользователь {msg.ReplyToMessage.From?.FirstName} получил 3 предупреждения. Выдал бан на 3 дня. (ban off for test)",
+                    $"Пользователь {msg.ReplyToMessage.From?.FirstName} получил 3 предупреждения. Выдал бан на 3 дня.",
                     ParseMode.Html);
             }
             else
@@ -165,6 +244,7 @@ public class AdminTools
             }
         }
     }
+
     public async Task UnWarnUser(ITelegramBotClient botClient, Message msg)
     {
         var member = await botClient.GetChatMember(msg.Chat.Id, msg.From.Id);
@@ -192,9 +272,9 @@ public class AdminTools
                     .FirstOrDefault(u => u.ChatId == msg.Chat.Id);
                 currentUser = userData?.Users?.FirstOrDefault(u => u.UserId == msg.ReplyToMessage.From?.Id);
             }
-            
+
             if (currentUser.Warns == null) currentUser.Warns = new List<Warn>();
-            
+
             currentUser?.Warns.Remove(currentUser.Warns.Last());
             await db.SaveChangesAsync();
             if (currentUser?.Warns.Count <= 0)
@@ -209,6 +289,7 @@ public class AdminTools
             }
         }
     }
+
     public async Task UserInfo(ITelegramBotClient botClient, Message msg)
     {
         var member = await botClient.GetChatMember(msg.Chat.Id, msg.From.Id);
@@ -219,26 +300,51 @@ public class AdminTools
                 ParseMode.Html);
             return;
         }
+
         using (ApplicationContext db = new ApplicationContext())
         {
             var userData = db.Chats
                 .Include(u => u.Users)
                 .ThenInclude(u => u.Warns)
+                .Include(u => u.Users)
+                .ThenInclude(u => u.Mutes)
+                .Include(u => u.Users)
+                .ThenInclude(u => u.Ban)
+                .Include(u => u.Users)
+                .ThenInclude(u => u.Kick)
                 .FirstOrDefault(u => u.ChatId == msg.Chat.Id);
             var currentUser = userData?.Users?
                 .FirstOrDefault(u => u.UserId == msg.ReplyToMessage.From?.Id);
+            if (currentUser.Ban == null) currentUser.Ban = new Ban();
+            if (currentUser.Kick == null) currentUser.Kick = new Kick();
+            if (currentUser.Mutes == null) currentUser.Mutes = new List<Mute>();
+            if (currentUser.Warns == null) currentUser.Warns = new List<Warn>();
+            var banDetails = currentUser?.Ban.Description ?? "Не имеет банов";
+            var kickDetails = currentUser?.Kick.Description ?? "Не имеет киков";
+            var muteDetails = string.Empty;
+            try
+            {
+                muteDetails = currentUser?.Mutes.Last().Description;
+            }
+            catch (InvalidOperationException)
+            {
+                muteDetails = "Нет мутов";
+            }
             var message = $"Информация о пользователе: {msg.ReplyToMessage.From?.FirstName}:\n" +
                           $"ID: {msg.ReplyToMessage.From?.Id}\n" +
                           $"Tag: {msg.ReplyToMessage.From?.Username}\n" +
-                          $"Кол-во предупреждений: {currentUser.Warns.Count}\n";
+                          $"Причина бана: {banDetails}\n" +
+                          $"Причина кика: {kickDetails}\n" +
+                          $"Причина мута: {muteDetails}\n" +
+                          $"Кол-во предупреждений: {currentUser?.Warns.Count}\n";
 
             if (currentUser?.Warns != null && currentUser.Warns.Any())
             {
-                message += $"Причина последнего предупреждения: {currentUser.Warns.Last().Description}";
+                message += $"Причина послед. пред-я: {currentUser.Warns.Last().Description}";
             }
             else
             {
-                message += "Причина последнего предупреждения: Нет предупреждений";
+                message += "Причина послед. пред-я: Нет предупреждений";
             }
 
             await botClient.SendMessage(msg.Chat.Id, "<blockquote>" + message + "</blockquote>", ParseMode.Html);
