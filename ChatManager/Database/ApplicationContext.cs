@@ -1,4 +1,6 @@
-﻿namespace ChatManager.Database;
+﻿using Telegram.Bot.Types;
+
+namespace ChatManager.Database;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
@@ -28,16 +30,41 @@ public class User
     public int ChatId { get; set; }
     public bool IsAdmin { get; set; }
     public Chat Chat { get; set; } = null!;
-    public Warn Warn { get; set; } = null!;
+    public List<Warn> Warns { get; set; } = null!;
+    public List<Mute> Mutes { get; set; } = null!;
+    public Ban Ban { get; set; } = null!;
+    public Kick Kick { get; set; } = null!;
 }
 
 public class Warn
 {
     public int Id { get; set; }
-    public short Warns { get; set; }
-    public string OneDescription { get; set; } = string.Empty;
-    public string TwoDescription { get; set; } = string.Empty;
-    public string ThreeDescription { get; set; } = string.Empty;
+    
+    public string Description { get; set; } = string.Empty;
+    public int UserId { get; set; }
+    public User User { get; set; } = null!;
+}
+
+public class Ban
+{
+    public int Id { get; set; }
+    public string Description { get; set; } = string.Empty;
+    public int UserId { get; set; }
+    public User User { get; set; } = null!;
+}
+
+public class Mute
+{
+    public int Id { get; set; }
+    public string Description { get; set; } = string.Empty;
+    public int UserId { get; set; }
+    public User User { get; set; } = null!;
+}
+
+public class Kick
+{
+    public int Id { get; set; }
+    public string Description { get; set; } = string.Empty;
     public int UserId { get; set; }
     public User User { get; set; } = null!;
 }
@@ -72,11 +99,35 @@ public class ApplicationContext : DbContext
             .HasIndex(i => i.ChatId);
 
         modelBuilder.Entity<User>()
-            .HasOne(i => i.Warn)
+            .HasMany(i => i.Warns)
             .WithOne(w => w.User)
-            .HasForeignKey<Warn>(w => w.UserId);
+            .HasForeignKey(w => w.UserId);
         
         modelBuilder.Entity<Warn>()
+            .HasIndex(w => w.UserId);
+        
+        modelBuilder.Entity<User>()
+            .HasMany(i => i.Mutes)
+            .WithOne(w => w.User)
+            .HasForeignKey(w => w.UserId);
+        
+        modelBuilder.Entity<Mute>()
+            .HasIndex(w => w.UserId);
+        
+        modelBuilder.Entity<User>()
+            .HasOne(i => i.Ban)
+            .WithOne(w => w.User)
+            .HasForeignKey<Ban>(w => w.UserId);
+        
+        modelBuilder.Entity<Ban>()
+            .HasIndex(w => w.UserId);
+        
+        modelBuilder.Entity<User>()
+            .HasOne(i => i.Kick)
+            .WithOne(w => w.User)
+            .HasForeignKey<Kick>(w => w.UserId);
+        
+        modelBuilder.Entity<Kick>()
             .HasIndex(w => w.UserId);
     }
 }

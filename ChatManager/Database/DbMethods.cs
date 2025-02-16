@@ -24,6 +24,7 @@ public class DbMethods
                 db.Chats.Add(newChat);
                 await db.SaveChangesAsync();
             }
+
             userData = db.Chats
                 .Include(u => u.Users)
                 .FirstOrDefault(u => u.ChatId == message.Chat.Id);
@@ -32,14 +33,12 @@ public class DbMethods
                 var newUser = new User
                 {
                     UserName = message.From.FirstName,
-                    UserId = message.From.Id, 
-                    IsAdmin = message.From.Id == 1016623551 ? true : false,
-                    Warn = new Warn()
+                    UserId = message.From.Id,
+                    IsAdmin = false
                 };
                 userData.Users.Add(newUser);
                 await db.SaveChangesAsync();
             }
-            
         }
     }
 }

@@ -3,12 +3,13 @@ using Microsoft.EntityFrameworkCore;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
+using User = ChatManager.Database.User;
 
 namespace ChatManager.Manager.Commands;
 
 public class AdminTools
 {
-    public async Task MuteUser(ITelegramBotClient botClient, Message msg, int duration)
+    public async Task MuteUser(ITelegramBotClient botClient, Message msg, int duration, string description)
     {
         var member = await botClient.GetChatMember(msg.Chat.Id, msg.From.Id);
         if (msg.ReplyToMessage is null) return;
@@ -18,7 +19,6 @@ public class AdminTools
                 ParseMode.Html);
             return;
         }
-
         await botClient.RestrictChatMember(msg.Chat.Id, msg.ReplyToMessage.From.Id, new ChatPermissions()
         {
             CanSendMessages = false,
@@ -66,7 +66,7 @@ public class AdminTools
             $"Успешно снят мут пользователю {msg.ReplyToMessage.From.FirstName}!");
     }
 
-    public async Task KickUser(ITelegramBotClient botClient, Message msg)
+    public async Task KickUser(ITelegramBotClient botClient, Message msg, string description)
     {
         var member = await botClient.GetChatMember(msg.Chat.Id, msg.From.Id);
         if (msg.ReplyToMessage is null) return;
@@ -76,14 +76,13 @@ public class AdminTools
                 ParseMode.Html);
             return;
         }
-
         await botClient.BanChatMember(msg.Chat.Id, msg.ReplyToMessage.From.Id);
         await botClient.UnbanChatMember(msg.Chat.Id, msg.ReplyToMessage.From.Id);
         await botClient.SendMessage(msg.Chat.Id, $"Пользователь {msg.ReplyToMessage.From.FirstName} успешно кикнут!",
             ParseMode.Html);
     }
 
-    public async Task BanUser(ITelegramBotClient botClient, Message msg, int duration)
+    public async Task BanUser(ITelegramBotClient botClient, Message msg, int duration, string description)
     {
         var member = await botClient.GetChatMember(msg.Chat.Id, msg.From.Id);
         if (msg.ReplyToMessage is null) return;
@@ -93,7 +92,6 @@ public class AdminTools
                 ParseMode.Html);
             return;
         }
-
         await botClient.BanChatMember(msg.Chat.Id, msg.ReplyToMessage.From.Id,
             untilDate: DateTime.UtcNow.AddMinutes(duration));
         await botClient.SendMessage(msg.Chat.Id, $"Пользователь {msg.ReplyToMessage.From.FirstName} успешно забанен!",
@@ -115,8 +113,7 @@ public class AdminTools
         await botClient.SendMessage(msg.Chat.Id, $"Пользователь {msg.ReplyToMessage.From.FirstName} успешно разбанен!",
             ParseMode.Html);
     }
-
-    public async Task WarnUser(ITelegramBotClient botClient, Message msg)
+    public async Task WarnUser(ITelegramBotClient botClient, Message msg, string description)
     {
         var member = await botClient.GetChatMember(msg.Chat.Id, msg.From.Id);
         if (msg.ReplyToMessage is null) return;
@@ -126,39 +123,48 @@ public class AdminTools
                 ParseMode.Html);
             return;
         }
-
         using (ApplicationContext db = new ApplicationContext())
         {
             var userData = db.Chats
                 .Include(u => u.Users)
-                .ThenInclude(u => u.Warn)
+                .ThenInclude(u => u.Warns)
                 .FirstOrDefault(u => u.ChatId == msg.Chat.Id);
             var currentUser = userData?.Users?.FirstOrDefault(u => u.UserId == msg.ReplyToMessage.From?.Id);
             if (currentUser is null || userData is null)
             {
                 await DbMethods.InitializeUserAsync(msg);
+                userData = db.Chats
+                    .Include(u => u.Users)
+                    .ThenInclude(u => u.Warns)
+                    .FirstOrDefault(u => u.ChatId == msg.Chat.Id);
+                currentUser = userData?.Users?.FirstOrDefault(u => u.UserId == msg.ReplyToMessage.From?.Id);
             }
+            
+            if (currentUser.Warns == null) currentUser.Warns = new List<Warn>();
 
-            currentUser.Warn.Warns++;
-            await db.SaveChangesAsync();
-            if (currentUser.Warn.Warns >= 3)
+            var warn = new Warn
             {
-                currentUser.Warn.Warns = 0;
+                Description = description
+            };
+            currentUser?.Warns.Add(warn);
+            await db.SaveChangesAsync();
+            if (currentUser.Warns.Count >= 3)
+            {
+                currentUser.Warns.Clear();
                 await db.SaveChangesAsync();
-                await BanUser(botClient, msg, 4320);
+                //await BanUser(botClient, msg, 4320);
                 await botClient.SendMessage(msg.Chat.Id,
-                    $"Пользователь {msg.ReplyToMessage.From?.FirstName} получил 3 предупреждения. Выдал бан на 3 дня.",
+                    $"Пользователь {msg.ReplyToMessage.From?.FirstName} получил 3 предупреждения. Выдал бан на 3 дня. (ban off for test)",
                     ParseMode.Html);
             }
             else
             {
                 await botClient.SendMessage(msg.Chat.Id,
-                    $"Пользователь {msg.ReplyToMessage.From?.FirstName} получил {currentUser.Warn.Warns} предупреждение из 3",
+                    $"Пользователь {msg.ReplyToMessage.From?.FirstName} получил {currentUser.Warns.Count} предупреждение из 3",
                     ParseMode.Html);
             }
         }
     }
-
     public async Task UnWarnUser(ITelegramBotClient botClient, Message msg)
     {
         var member = await botClient.GetChatMember(msg.Chat.Id, msg.From.Id);
@@ -174,29 +180,25 @@ public class AdminTools
         {
             var userData = db.Chats
                 .Include(u => u.Users)
-                .ThenInclude(u => u.Warn)
+                .ThenInclude(u => u.Warns)
                 .FirstOrDefault(u => u.ChatId == msg.Chat.Id);
             var currentUser = userData?.Users?.FirstOrDefault(u => u.UserId == msg.ReplyToMessage.From?.Id);
             if (currentUser is null || userData is null)
             {
                 await DbMethods.InitializeUserAsync(msg);
+                userData = db.Chats
+                    .Include(u => u.Users)
+                    .ThenInclude(u => u.Warns)
+                    .FirstOrDefault(u => u.ChatId == msg.Chat.Id);
+                currentUser = userData?.Users?.FirstOrDefault(u => u.UserId == msg.ReplyToMessage.From?.Id);
             }
-            switch (currentUser.Warn.Warns)
+            
+            if (currentUser.Warns == null) currentUser.Warns = new List<Warn>();
+            
+            currentUser?.Warns.Remove(currentUser.Warns.Last());
+            await db.SaveChangesAsync();
+            if (currentUser?.Warns.Count <= 0)
             {
-                case 1:
-                    currentUser.Warn.OneDescription = "Not set";
-                    break;
-                case 2:
-                    currentUser.Warn.TwoDescription = "Not set";
-                    break;
-                case 3:
-                    currentUser.Warn.ThreeDescription = "Not set";
-                    break;
-            }
-            currentUser.Warn.Warns--;
-            if (currentUser.Warn.Warns < 0)
-            {
-                currentUser.Warn.Warns = 0;
                 await botClient.SendMessage(msg.Chat.Id,
                     $"Пользователь {msg.ReplyToMessage.From?.FirstName} не имеет предупреждений.", ParseMode.Html);
             }
@@ -205,67 +207,8 @@ public class AdminTools
                 await botClient.SendMessage(msg.Chat.Id,
                     $"Успешно снял {msg.ReplyToMessage.From?.FirstName} 1 предупреждение", ParseMode.Html);
             }
-
-            await db.SaveChangesAsync();
         }
     }
-
-    public async Task WarnUser(ITelegramBotClient botClient, Message msg, string description)
-    {
-        var member = await botClient.GetChatMember(msg.Chat.Id, msg.From.Id);
-        if (msg.ReplyToMessage is null) return;
-        if (member.Status != ChatMemberStatus.Administrator && member.Status != ChatMemberStatus.Creator)
-        {
-            await botClient.SendMessage(msg.Chat.Id, "У вас недостаточно прав чтобы использовать эту комманду.",
-                ParseMode.Html);
-            return;
-        }
-
-        using (ApplicationContext db = new ApplicationContext())
-        {
-            var userData = db.Chats
-                .Include(u => u.Users)
-                .ThenInclude(u => u.Warn)
-                .FirstOrDefault(u => u.ChatId == msg.Chat.Id);
-            var currentUser = userData?.Users?
-                .FirstOrDefault(u => u.UserId == msg.ReplyToMessage.From?.Id);
-            if (currentUser is null || userData is null)
-            {
-                await DbMethods.InitializeUserAsync(msg);
-            }
-
-            currentUser.Warn.Warns++;
-            switch (currentUser.Warn.Warns)
-            {
-                case 1:
-                    currentUser.Warn.OneDescription = description;
-                    break;
-                case 2:
-                    currentUser.Warn.TwoDescription = description;
-                    break;
-                case 3:
-                    currentUser.Warn.ThreeDescription = description;
-                    break;
-            }
-            await db.SaveChangesAsync();
-            if (currentUser.Warn.Warns >= 3)
-            {
-                currentUser.Warn.Warns = 0;
-                await db.SaveChangesAsync();
-                await BanUser(botClient, msg, 4320);
-                await botClient.SendMessage(msg.Chat.Id,
-                    $"Пользователь {msg.ReplyToMessage.From?.FirstName} получил 3 предупреждения. Выдал бан на 3 дня.",
-                    ParseMode.Html);
-            }
-            else
-            {
-                await botClient.SendMessage(msg.Chat.Id,
-                    $"Пользователь {msg.ReplyToMessage.From?.FirstName} получил {currentUser.Warn.Warns} предупреждение из 3. Причина: {description}",
-                    ParseMode.Html);
-            }
-        }
-    }
-
     public async Task UserInfo(ITelegramBotClient botClient, Message msg)
     {
         var member = await botClient.GetChatMember(msg.Chat.Id, msg.From.Id);
@@ -280,29 +223,24 @@ public class AdminTools
         {
             var userData = db.Chats
                 .Include(u => u.Users)
-                .ThenInclude(u => u.Warn)
+                .ThenInclude(u => u.Warns)
                 .FirstOrDefault(u => u.ChatId == msg.Chat.Id);
             var currentUser = userData?.Users?
                 .FirstOrDefault(u => u.UserId == msg.ReplyToMessage.From?.Id);
             var message = $"Информация о пользователе: {msg.ReplyToMessage.From?.FirstName}:\n" +
                           $"ID: {msg.ReplyToMessage.From?.Id}\n" +
                           $"Tag: {msg.ReplyToMessage.From?.Username}\n" +
-                          $"Кол-во предупреждений: {currentUser.Warn.Warns}\n";
-            switch (currentUser.Warn.Warns)
+                          $"Кол-во предупреждений: {currentUser.Warns.Count}\n";
+
+            if (currentUser?.Warns != null && currentUser.Warns.Any())
             {
-                case 1:
-                    message += $"Причина первого предупреждения: {currentUser.Warn.OneDescription}";
-                    break;
-                case 2:
-                    message += $"Причина первого предупреждения: {currentUser.Warn.OneDescription}\n" +
-                               $"Причина второго предупреждения: {currentUser.Warn.TwoDescription}";
-                    break;
-                case 3:
-                    message += $"Причина первого предупреждения: {currentUser.Warn.OneDescription}\n" +
-                               $"Причина второго предупреждения: {currentUser.Warn.TwoDescription}\n"+
-                               $"Причина третьего предупреждения: {currentUser.Warn.ThreeDescription}";
-                    break;
+                message += $"Причина последнего предупреждения: {currentUser.Warns.Last().Description}";
             }
+            else
+            {
+                message += "Причина последнего предупреждения: Нет предупреждений";
+            }
+
             await botClient.SendMessage(msg.Chat.Id, "<blockquote>" + message + "</blockquote>", ParseMode.Html);
         }
     }

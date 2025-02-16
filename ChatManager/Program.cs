@@ -48,7 +48,11 @@ async Task OnMessage(Message msg, UpdateType type)
             case "/mute":
                 try
                 {
-                    await adminTools.MuteUser(bot, msg, int.Parse(argument));
+                    if (defArgument is null)
+                    {
+                        await adminTools.MuteUser(bot, msg,int.Parse(argument),"Не указана");
+                    }
+                    else await adminTools.MuteUser(bot, msg,int.Parse(argument), defArgument);
                 }
                 catch (Exception)
                 {
@@ -63,7 +67,11 @@ async Task OnMessage(Message msg, UpdateType type)
             case "/ban":
                 try
                 {
-                    await adminTools.BanUser(bot, msg, int.Parse(argument));
+                    if (defArgument is null)
+                    {
+                        await adminTools.BanUser(bot, msg,int.Parse(argument),"Не указана");
+                    }
+                    else await adminTools.BanUser(bot, msg,int.Parse(argument), defArgument);
                 }
                 catch (Exception)
                 {
@@ -76,12 +84,16 @@ async Task OnMessage(Message msg, UpdateType type)
                 await adminTools.UnBanUser(bot, msg);
                 break;
             case "/kick":
-                await adminTools.KickUser(bot, msg);
+                if (argument is null)
+                {
+                    await adminTools.KickUser(bot, msg, "Не указана");
+                }
+                else await adminTools.KickUser(bot, msg, argument);
                 break;
             case "/warn":
                 if (argument is null)
                 {
-                    await adminTools.WarnUser(bot, msg);
+                    await adminTools.WarnUser(bot, msg, "Не указана");
                 }
                 else await adminTools.WarnUser(bot, msg, argument);
 
