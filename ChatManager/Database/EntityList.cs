@@ -6,7 +6,7 @@ public class EntityList
     {
         public int Id { get; set; }
         public long ChatId { get; set; }
-        public List<User>? Users { get; set; } = new List<User>();
+        public List<User> Users { get; set; } = null!;
         public List<Word> Words { get; set; } = null!;
     }
 

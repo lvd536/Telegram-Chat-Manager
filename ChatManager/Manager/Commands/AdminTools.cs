@@ -329,13 +329,13 @@ public class AdminTools
             {
                 muteDetails = "Нет мутов";
             }
-            var message = $"Информация о пользователе: {msg.ReplyToMessage.From?.FirstName}:\n" +
-                          $"ID: {msg.ReplyToMessage.From?.Id}\n" +
-                          $"Tag: {msg.ReplyToMessage.From?.Username}\n" +
-                          $"Причина бана: {banDetails}\n" +
-                          $"Причина кика: {kickDetails}\n" +
-                          $"Причина мута: {muteDetails}\n" +
-                          $"Кол-во предупреждений: {currentUser?.Warns.Count}\n";
+            var message = $"👤 Информация о пользователе: {msg.ReplyToMessage.From?.FirstName}:\n" +
+                          $"🆔 ID: {msg.ReplyToMessage.From?.Id}\n" +
+                          $"📌 Tag: {msg.ReplyToMessage.From?.Username}\n" +
+                          $"🚫 Причина бана: {banDetails}\n" +
+                          $"⛔️ Причина кика: {kickDetails}\n" +
+                          $"🔇 Причина мута: {muteDetails}\n" +
+                          $"⚠️ Кол-во предупреждений: {currentUser?.Warns.Count}\n";
 
             if (currentUser?.Warns != null && currentUser.Warns.Any())
             {
