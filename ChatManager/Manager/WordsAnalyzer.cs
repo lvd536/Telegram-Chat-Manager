@@ -35,8 +35,7 @@ public class WordsAnalyzer
             if (data.Words.Any(w => w.BlockWord.ToLower().Contains(msg.Text.ToLower())))
             {
                 await botClient.DeleteMessage(msg.Chat.Id, msg.Id);
-                await botClient.SendMessage(msg.Chat.Id, 
-                    $"Сообщение с содержанием {msg.Text} было удалено т.к содержит запрещенное выражение.");
+                await botClient.SendMessage(msg.Chat.Id, $"Сообщение с содержанием <em>{msg.Text}</em> было удалено т.к содержит запрещенное выражение.", ParseMode.Html);
             }
         }
     }
@@ -45,7 +44,7 @@ public class WordsAnalyzer
         var member = await botClient.GetChatMember(msg.Chat.Id, msg.From.Id);
         if (member.Status != ChatMemberStatus.Administrator && member.Status != ChatMemberStatus.Creator)
         {
-            await botClient.SendMessage(msg.Chat.Id, "У вас недостаточно прав чтобы использовать эту комманду.",
+            await botClient.SendMessage(msg.Chat.Id, "<b>У вас недостаточно прав чтобы использовать эту комманду!</b>",
                 ParseMode.Html);
             return;
         }
