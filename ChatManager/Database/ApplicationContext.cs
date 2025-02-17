@@ -8,6 +8,7 @@ public class Chat
     public int Id { get; set; }
     public long ChatId { get; set; }
     public List<User>? Users { get; set; } = new List<User>();
+    public List<Word>? Words { get; set; } = new List<Word>();
 }
 
 public class User
@@ -65,6 +66,14 @@ public class Kick
     public string Description { get; set; } = string.Empty;
     public int UserId { get; set; }
     public User User { get; set; } = null!;
+}
+
+public class Word
+{
+    public int Id { get; set; }
+    public string BlockWord { get; set; } = String.Empty;
+    public int ChatId { get; set; }
+    public Chat Chat { get; set; } = null!;
 }
 
 public class ApplicationContext : DbContext
@@ -127,6 +136,14 @@ public class ApplicationContext : DbContext
         
         modelBuilder.Entity<Kick>()
             .HasIndex(w => w.UserId);
+        
+        modelBuilder.Entity<Chat>()
+            .HasMany(c => c.Words)
+            .WithOne(w => w.Chat)
+            .HasForeignKey(w => w.ChatId);
+        
+        modelBuilder.Entity<Word>()
+            .HasIndex(w => w.ChatId);
     }
 }
 
