@@ -82,4 +82,72 @@ public class WordsAnalyzer
             await botClient.SendMessage(msg.Chat.Id, $"Слово {word} успешно добавлено в список запрещенных слов!");
         }
     }
+    public async Task RemoveWord(ITelegramBotClient botClient, Message msg, string word)
+    {
+        var member = await botClient.GetChatMember(msg.Chat.Id, msg.From.Id);
+        if (member.Status != ChatMemberStatus.Administrator && member.Status != ChatMemberStatus.Creator)
+        {
+            await botClient.SendMessage(msg.Chat.Id, "<b>У вас недостаточно прав чтобы использовать эту комманду!</b>",
+                ParseMode.Html);
+            return;
+        }
+        using (ApplicationContext db = new ApplicationContext())
+        {
+            var data = db.Chats
+                .Include(w => w.Words)
+                .FirstOrDefault(x => x.ChatId == msg.Chat.Id);
+            if (data is null)
+            {
+                await DbMethods.InitializeUserAsync(msg);
+                data = db.Chats
+                    .Include(w => w.Words)
+                    .FirstOrDefault(x => x.ChatId == msg.Chat.Id);
+            }
+            if (data.Words == null) data.Words = new List<EntityList.Word>();
+
+            if (!data.Words.Any(w => w.BlockWord.ToLower().Contains(word.ToLower())))
+            {
+                await botClient.SendMessage(msg.Chat.Id, $"Такого слова нет в списке.");
+                return;
+            }
+
+            var removeWord = new EntityList.Word
+            {
+                BlockWord = word
+            };
+            data.Words.Remove(removeWord);
+            await db.SaveChangesAsync();
+            await botClient.SendMessage(msg.Chat.Id, $"Слово {word} успешно удалено из списка запрещенных слов!");
+        }
+    }
+    public async Task ListWords(ITelegramBotClient botClient, Message msg)
+    {
+        var member = await botClient.GetChatMember(msg.Chat.Id, msg.From.Id);
+        if (member.Status != ChatMemberStatus.Administrator && member.Status != ChatMemberStatus.Creator)
+        {
+            await botClient.SendMessage(msg.Chat.Id, "У вас недостаточно прав чтобы использовать эту комманду.",
+                ParseMode.Html);
+            return;
+        }
+        var message = "Список запрещенных слов: ";
+        using (ApplicationContext db = new ApplicationContext())
+        {
+            var data = db.Chats
+                .Include(w => w.Words)
+                .FirstOrDefault(x => x.ChatId == msg.Chat.Id);
+            if (data is null)
+            {
+                await DbMethods.InitializeUserAsync(msg);
+                data = db.Chats
+                    .Include(w => w.Words)
+                    .FirstOrDefault(x => x.ChatId == msg.Chat.Id);
+            }
+            if (data.Words == null) data.Words = new List<EntityList.Word>();
+            for (int i = 0; i < data.Words.Count; i++)
+            {
+                message += $"\n<blockquote>{i}. {data.Words[i].BlockWord}</blockquote>";
+            }
+        }
+        await botClient.SendMessage(msg.Chat.Id, message, ParseMode.Html);
+    }
 }

@@ -117,6 +117,9 @@ async Task OnMessage(Message msg, UpdateType type)
                 }
                 else await messageAnalyzer.AddWord(bot, msg, argument);
                 break;
+            case "/blocklist":
+                await messageAnalyzer.ListWords(bot, msg);
+                break;
         }
     }
 }
