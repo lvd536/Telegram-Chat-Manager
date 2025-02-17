@@ -14,6 +14,7 @@ var profileCommand = new ProfileCommand();
 var topCommand = new TopCommand();
 var adminTools = new AdminTools();
 var helpCommand = new HelpCommand();
+var messageAnalyzer = new WordsAnalyzer();
 bot.OnMessage += OnMessage;
 bot.OnUpdate += OnCallbackQuery;
 bot.OnError += OnError;
@@ -24,6 +25,7 @@ cts.Cancel();
 async Task OnMessage(Message msg, UpdateType type)
 {
     await messageHandler.MessageCounterAsync(bot, msg, msg.Type);
+    await messageAnalyzer.MessageAnalyzer(bot, msg);
     if (msg.Text is null) return;
     var commandParts = msg.Text.Split(' ');
     var command = commandParts[0];
@@ -107,6 +109,13 @@ async Task OnMessage(Message msg, UpdateType type)
                 break;
             case "/help":
                 await helpCommand.HelpCmd(bot, msg);
+                break;
+            case "/add":
+                if (argument is null)
+                {
+                    await bot.SendMessage(msg.Chat.Id, "Слово не указано.", ParseMode.Html);
+                }
+                else await messageAnalyzer.AddWord(bot, msg, argument);
                 break;
         }
     }

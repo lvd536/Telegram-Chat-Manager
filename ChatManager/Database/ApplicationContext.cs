@@ -8,7 +8,7 @@ public class Chat
     public int Id { get; set; }
     public long ChatId { get; set; }
     public List<User>? Users { get; set; } = new List<User>();
-    public List<Word>? Words { get; set; } = new List<Word>();
+    public List<Word> Words { get; set; } = null!;
 }
 
 public class User
@@ -71,7 +71,7 @@ public class Kick
 public class Word
 {
     public int Id { get; set; }
-    public string BlockWord { get; set; } = String.Empty;
+    public string BlockWord { get; set; } = string.Empty;
     public int ChatId { get; set; }
     public Chat Chat { get; set; } = null!;
 }
