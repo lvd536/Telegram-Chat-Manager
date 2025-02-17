@@ -120,6 +120,13 @@ async Task OnMessage(Message msg, UpdateType type)
             case "/blocklist":
                 await messageAnalyzer.ListWords(bot, msg);
                 break;
+            case "/remove":
+                if (argument is null)
+                {
+                    await bot.SendMessage(msg.Chat.Id, "Слово не указано.", ParseMode.Html);
+                }
+                else await messageAnalyzer.RemoveWord(bot, msg, argument);
+                break;
         }
     }
 }

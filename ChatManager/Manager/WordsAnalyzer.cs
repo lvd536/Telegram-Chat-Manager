@@ -11,13 +11,6 @@ public class WordsAnalyzer
     public async Task MessageAnalyzer(ITelegramBotClient botClient, Message msg)
     {
         if (msg.Text is null || msg.Text.StartsWith('/')) return;
-        var member = await botClient.GetChatMember(msg.Chat.Id, msg.From.Id);
-        if (member.Status != ChatMemberStatus.Administrator && member.Status != ChatMemberStatus.Creator)
-        {
-            await botClient.SendMessage(msg.Chat.Id, "У вас недостаточно прав чтобы использовать эту комманду.",
-                ParseMode.Html);
-            return;
-        }
         var message = msg.Text.Split(' ');
         using (ApplicationContext db = new ApplicationContext())
         {
@@ -104,18 +97,14 @@ public class WordsAnalyzer
                     .FirstOrDefault(x => x.ChatId == msg.Chat.Id);
             }
             if (data.Words == null) data.Words = new List<EntityList.Word>();
-
-            if (!data.Words.Any(w => w.BlockWord.ToLower().Contains(word.ToLower())))
+            
+            var currentWord = data.Words.FirstOrDefault(w => w.BlockWord.ToLower().Contains(word.ToLower()));
+            if (currentWord is null)
             {
                 await botClient.SendMessage(msg.Chat.Id, $"Такого слова нет в списке.");
                 return;
             }
-
-            var removeWord = new EntityList.Word
-            {
-                BlockWord = word
-            };
-            data.Words.Remove(removeWord);
+            data.Words.Remove(currentWord);
             await db.SaveChangesAsync();
             await botClient.SendMessage(msg.Chat.Id, $"Слово {word} успешно удалено из списка запрещенных слов!");
         }
