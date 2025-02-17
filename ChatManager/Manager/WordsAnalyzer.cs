@@ -11,6 +11,7 @@ public class WordsAnalyzer
     public async Task MessageAnalyzer(ITelegramBotClient botClient, Message msg)
     {
         if (msg.Text is null || msg.Text.StartsWith('/')) return;
+        var message = msg.Text.Split(' ');
         var member = await botClient.GetChatMember(msg.Chat.Id, msg.From.Id);
         if (member.Status != ChatMemberStatus.Administrator && member.Status != ChatMemberStatus.Creator)
         {
@@ -31,11 +32,15 @@ public class WordsAnalyzer
                     .FirstOrDefault(x => x.ChatId == msg.Chat.Id);
             }
             if (data.Words == null) data.Words = new List<Word>();
-            
-            if (data.Words.Any(w => w.BlockWord.ToLower().Contains(msg.Text.ToLower())))
+            foreach (var word in message)
             {
-                await botClient.DeleteMessage(msg.Chat.Id, msg.Id);
-                await botClient.SendMessage(msg.Chat.Id, $"Сообщение с содержанием <em>{msg.Text}</em> было удалено т.к содержит запрещенное выражение.", ParseMode.Html);
+                if (data.Words.Any(w => w.BlockWord.ToLower().Contains(word.ToLower())))
+                {
+                    await botClient.DeleteMessage(msg.Chat.Id, msg.Id);
+                    await botClient.SendMessage(msg.Chat.Id,
+                        $"Сообщение с содержанием <em>{msg.Text}</em> было удалено т.к содержит запрещенное выражение.",
+                        ParseMode.Html);
+                }
             }
         }
     }
