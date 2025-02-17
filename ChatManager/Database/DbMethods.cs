@@ -16,7 +16,7 @@ public class DbMethods
             if (userData is not null && currentUser is not null) return;
             if (userData?.ChatId is null)
             {
-                var newChat = new Chat
+                var newChat = new EntityList.Chat
                 {
                     ChatId = message.Chat.Id,
                 };
@@ -29,7 +29,7 @@ public class DbMethods
                 .FirstOrDefault(u => u.ChatId == message.Chat.Id);
             if (currentUser is null)
             {
-                var newUser = new User
+                var newUser = new EntityList.User
                 {
                     UserName = message.From.FirstName,
                     UserId = message.From.Id,

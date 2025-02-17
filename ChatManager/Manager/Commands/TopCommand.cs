@@ -17,22 +17,18 @@ public class TopCommand
                 .Include(u => u.Users)
                 .FirstOrDefault(u => u.ChatId == msg.Chat.Id);
             var users = userData.Users.ToList();
-            var message = String.Empty;
+            var message = string.Empty;
             var keyboard = new InlineKeyboardMarkup()
                 .AddButton("⭐️ Топ по уровню", "TopByLevel")
-                .AddNewRow()
                 .AddButton("📊 Топ по всем сообщениям", "TopByMessages")
                 .AddNewRow()
-                .AddButton("💬 Топ по текстовым сообщениям", "TopByTextMessages")
-                .AddNewRow()
+                .AddButton("💬 Топ по текстовым", "TopByTextMessages")
                 .AddButton("🎤 Топ по голосовым", "TopByAudioMessages")
                 .AddNewRow()
                 .AddButton("⭕️ Топ по кружкам", "TopByVideoMessages")
-                .AddNewRow()
                 .AddButton("😀 Топ по стикерам", "TopBySticker")
                 .AddNewRow()
                 .AddButton("📷 Топ по фото", "TopByPhoto")
-                .AddNewRow()
                 .AddButton("📍 Топ по гео", "TopByLocation")
                 .AddNewRow()
                 .AddButton("📦 Топ по другим сообщениям", "TopByOther");
@@ -40,7 +36,7 @@ public class TopCommand
             {
                 case 1:
                     users.Sort((a, b) => (int)(b.Level - a.Level));
-                    message = $"Топ пользователей по уровню: ";
+                    message = $"⭐️ Топ пользователей по уровню: ";
                     foreach (var u in users)
                     {
                         message += $"\n<blockquote>{u.UserName} - {u.Level} уровень</blockquote>";
@@ -55,7 +51,7 @@ public class TopCommand
                     break;
                 case 2:
                     users.Sort((a, b) => (int)(b.Messages - a.Messages));
-                    message = $"Топ пользователей по всем сообщениям: ";
+                    message = $"📊 Топ пользователей по всем сообщениям: ";
                     foreach (var u in users)
                     {
                         message += $"\n<blockquote>{u.UserName} - {u.Messages} сообщений</blockquote>";
@@ -70,7 +66,7 @@ public class TopCommand
                     break;
                 case 3:
                     users.Sort((a, b) => (int)(b.TextMessages - a.TextMessages));
-                    message = $"Топ пользователей по текстовым сообщениям: ";
+                    message = $"💬 Топ пользователей по текстовым сообщениям: ";
                     foreach (var u in users)
                     {
                         message += $"\n<blockquote>{u.UserName} - {u.TextMessages} текстовых сообщений</blockquote>";
@@ -85,7 +81,7 @@ public class TopCommand
                     break;
                 case 4:
                     users.Sort((a, b) => (int)(b.AudioMessages - a.AudioMessages));
-                    message = $"Топ пользователей по голосовым: ";
+                    message = $"🎤 Топ пользователей по голосовым: ";
                     foreach (var u in users)
                     {
                         message += $"\n<blockquote>{u.UserName} - {u.AudioMessages} голосовых</blockquote>";
@@ -100,7 +96,7 @@ public class TopCommand
                     break;
                 case 5:
                     users.Sort((a, b) => (int)(b.VideoMessages - a.VideoMessages));
-                    message = $"Топ пользователей по кружкам: ";
+                    message = $"⭕️ Топ пользователей по кружкам: ";
                     foreach (var u in users)
                     {
                         message += $"\n<blockquote>{u.UserName} - {u.VideoMessages} кружков</blockquote>";
@@ -115,7 +111,7 @@ public class TopCommand
                     break;
                 case 6:
                     users.Sort((a, b) => (int)(b.StickerMessages - a.StickerMessages));
-                    message = $"Топ пользователей по стикерам: ";
+                    message = $"😀 Топ пользователей по стикерам: ";
                     foreach (var u in users)
                     {
                         message += $"\n<blockquote>{u.UserName} - {u.StickerMessages} стикеров</blockquote>";
@@ -130,7 +126,7 @@ public class TopCommand
                     break;
                 case 7:
                     users.Sort((a, b) => (int)(b.PhotoMessages - a.PhotoMessages));
-                    message = $"Топ пользователей по фото: ";
+                    message = $"📷 Топ пользователей по фото: ";
                     foreach (var u in users)
                     {
                         message += $"\n<blockquote>{u.UserName} - {u.PhotoMessages} фото</blockquote>";
@@ -145,7 +141,7 @@ public class TopCommand
                     break;
                 case 8:
                     users.Sort((a, b) => (int)(b.LocationMessages - a.LocationMessages));
-                    message = $"Топ пользователей по гео: ";
+                    message = $"📍 Топ пользователей по гео: ";
                     foreach (var u in users)
                     {
                         message += $"\n<blockquote>{u.UserName} - {u.LocationMessages} гео</blockquote>";
@@ -160,7 +156,7 @@ public class TopCommand
                     break;
                 case 9:
                     users.Sort((a, b) => (int)(b.OtherMessages - a.OtherMessages));
-                    message = $"Топ пользователей по другим сообщениям: ";
+                    message = $"📦 Топ пользователей по другим сообщениям: ";
                     foreach (var u in users)
                     {
                         message += $"\n<blockquote>{u.UserName} - {u.OtherMessages} других сообщений</blockquote>";

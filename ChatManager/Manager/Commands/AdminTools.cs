@@ -36,9 +36,9 @@ public class AdminTools
                 currentUser = userData?.Users?.FirstOrDefault(u => u.UserId == msg.ReplyToMessage.From?.Id);
             }
 
-            if (currentUser.Mutes == null) currentUser.Mutes = new List<Mute>();
+            if (currentUser.Mutes == null) currentUser.Mutes = new List<EntityList.Mute>();
 
-            var mute = new Mute
+            var mute = new EntityList.Mute
             {
                 Description = description + $" | Продолжительность: {duration}"
             };
@@ -120,7 +120,7 @@ public class AdminTools
                 currentUser = userData?.Users?.FirstOrDefault(u => u.UserId == msg.ReplyToMessage.From?.Id);
             }
 
-            if (currentUser.Kick == null) currentUser.Kick = new Kick();
+            if (currentUser.Kick == null) currentUser.Kick = new EntityList.Kick();
 
             currentUser.Kick.Description = description;
             await db.SaveChangesAsync();
@@ -160,7 +160,7 @@ public class AdminTools
                 currentUser = userData?.Users?.FirstOrDefault(u => u.UserId == msg.ReplyToMessage.From?.Id);
             }
 
-            if (currentUser.Ban == null) currentUser.Ban = new Ban();
+            if (currentUser.Ban == null) currentUser.Ban = new EntityList.Ban();
 
             currentUser.Ban.Description = description;
             await db.SaveChangesAsync();
@@ -218,9 +218,9 @@ public class AdminTools
                 currentUser = userData?.Users?.FirstOrDefault(u => u.UserId == msg.ReplyToMessage.From?.Id);
             }
 
-            if (currentUser.Warns == null) currentUser.Warns = new List<Warn>();
+            if (currentUser.Warns == null) currentUser.Warns = new List<EntityList.Warn>();
 
-            var warn = new Warn
+            var warn = new EntityList.Warn
             {
                 Description = description
             };
@@ -272,7 +272,7 @@ public class AdminTools
                 currentUser = userData?.Users?.FirstOrDefault(u => u.UserId == msg.ReplyToMessage.From?.Id);
             }
 
-            if (currentUser.Warns == null) currentUser.Warns = new List<Warn>();
+            if (currentUser.Warns == null) currentUser.Warns = new List<EntityList.Warn>();
 
             currentUser?.Warns.Remove(currentUser.Warns.Last());
             await db.SaveChangesAsync();
@@ -314,10 +314,10 @@ public class AdminTools
                 .FirstOrDefault(u => u.ChatId == msg.Chat.Id);
             var currentUser = userData?.Users?
                 .FirstOrDefault(u => u.UserId == msg.ReplyToMessage.From?.Id);
-            if (currentUser.Ban == null) currentUser.Ban = new Ban();
-            if (currentUser.Kick == null) currentUser.Kick = new Kick();
-            if (currentUser.Mutes == null) currentUser.Mutes = new List<Mute>();
-            if (currentUser.Warns == null) currentUser.Warns = new List<Warn>();
+            if (currentUser?.Ban is null) currentUser.Ban = new EntityList.Ban();
+            if (currentUser?.Kick is null) currentUser.Kick = new EntityList.Kick();
+            if (currentUser?.Mutes is null) currentUser.Mutes = new List<EntityList.Mute>();
+            if (currentUser?.Warns is null) currentUser.Warns = new List<EntityList.Warn>();
             var banDetails = currentUser?.Ban.Description ?? "Не имеет банов";
             var kickDetails = currentUser?.Kick.Description ?? "Не имеет киков";
             var muteDetails = string.Empty;

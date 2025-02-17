@@ -3,82 +3,9 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 
-public class Chat
-{
-    public int Id { get; set; }
-    public long ChatId { get; set; }
-    public List<User>? Users { get; set; } = new List<User>();
-    public List<Word> Words { get; set; } = null!;
-}
-
-public class User
-{
-    public int Id { get; set; }
-    public string UserName { get; set; } = string.Empty;
-    public long Messages { get; set; }
-    public long TextMessages { get; set; }
-    public long AudioMessages { get; set; }
-    public long VideoMessages { get; set; }
-    public long StickerMessages { get; set; }
-    public long PhotoMessages { get; set; }
-    public long LocationMessages { get; set; }
-    public long OtherMessages { get; set; }
-    public long Level { get; set; } = 1;
-    public long Points { get; set; }
-    public long UserId { get; set; }
-    public int ChatId { get; set; }
-    public bool IsAdmin { get; set; }
-    public Chat Chat { get; set; } = null!;
-    public List<Warn> Warns { get; set; } = null!;
-    public List<Mute> Mutes { get; set; } = null!;
-    public Ban Ban { get; set; } = null!;
-    public Kick Kick { get; set; } = null!;
-}
-
-public class Warn
-{
-    public int Id { get; set; }
-    
-    public string Description { get; set; } = string.Empty;
-    public int UserId { get; set; }
-    public User User { get; set; } = null!;
-}
-
-public class Ban
-{
-    public int Id { get; set; }
-    public string Description { get; set; } = string.Empty;
-    public int UserId { get; set; }
-    public User User { get; set; } = null!;
-}
-
-public class Mute
-{
-    public int Id { get; set; }
-    public string Description { get; set; } = string.Empty;
-    public int UserId { get; set; }
-    public User User { get; set; } = null!;
-}
-
-public class Kick
-{
-    public int Id { get; set; }
-    public string Description { get; set; } = string.Empty;
-    public int UserId { get; set; }
-    public User User { get; set; } = null!;
-}
-
-public class Word
-{
-    public int Id { get; set; }
-    public string BlockWord { get; set; } = string.Empty;
-    public int ChatId { get; set; }
-    public Chat Chat { get; set; } = null!;
-}
-
 public class ApplicationContext : DbContext
 {
-    public DbSet<Chat> Chats => Set<Chat>();
+    public DbSet<EntityList.Chat> Chats => Set<EntityList.Chat>();
 
     public ApplicationContext()
     {
@@ -97,52 +24,52 @@ public class ApplicationContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Chat>()
+        modelBuilder.Entity<EntityList.Chat>()
             .HasMany(u => u.Users)
             .WithOne(i => i.Chat)
             .HasForeignKey(i => i.ChatId);
         
-        modelBuilder.Entity<User>()
+        modelBuilder.Entity<EntityList.User>()
             .HasIndex(i => i.ChatId);
 
-        modelBuilder.Entity<User>()
+        modelBuilder.Entity<EntityList.User>()
             .HasMany(i => i.Warns)
             .WithOne(w => w.User)
             .HasForeignKey(w => w.UserId);
         
-        modelBuilder.Entity<Warn>()
+        modelBuilder.Entity<EntityList.Warn>()
             .HasIndex(w => w.UserId);
         
-        modelBuilder.Entity<User>()
+        modelBuilder.Entity<EntityList.User>()
             .HasMany(i => i.Mutes)
             .WithOne(w => w.User)
             .HasForeignKey(w => w.UserId);
         
-        modelBuilder.Entity<Mute>()
+        modelBuilder.Entity<EntityList.Mute>()
             .HasIndex(w => w.UserId);
         
-        modelBuilder.Entity<User>()
+        modelBuilder.Entity<EntityList.User>()
             .HasOne(i => i.Ban)
             .WithOne(w => w.User)
-            .HasForeignKey<Ban>(w => w.UserId);
+            .HasForeignKey<EntityList.Ban>(w => w.UserId);
         
-        modelBuilder.Entity<Ban>()
+        modelBuilder.Entity<EntityList.Ban>()
             .HasIndex(w => w.UserId);
         
-        modelBuilder.Entity<User>()
+        modelBuilder.Entity<EntityList.User>()
             .HasOne(i => i.Kick)
             .WithOne(w => w.User)
-            .HasForeignKey<Kick>(w => w.UserId);
+            .HasForeignKey<EntityList.Kick>(w => w.UserId);
         
-        modelBuilder.Entity<Kick>()
+        modelBuilder.Entity<EntityList.Kick>()
             .HasIndex(w => w.UserId);
         
-        modelBuilder.Entity<Chat>()
+        modelBuilder.Entity<EntityList.Chat>()
             .HasMany(c => c.Words)
             .WithOne(w => w.Chat)
             .HasForeignKey(w => w.ChatId);
         
-        modelBuilder.Entity<Word>()
+        modelBuilder.Entity<EntityList.Word>()
             .HasIndex(w => w.ChatId);
     }
 }

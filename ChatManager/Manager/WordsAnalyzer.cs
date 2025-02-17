@@ -11,7 +11,6 @@ public class WordsAnalyzer
     public async Task MessageAnalyzer(ITelegramBotClient botClient, Message msg)
     {
         if (msg.Text is null || msg.Text.StartsWith('/')) return;
-        var message = msg.Text.Split(' ');
         var member = await botClient.GetChatMember(msg.Chat.Id, msg.From.Id);
         if (member.Status != ChatMemberStatus.Administrator && member.Status != ChatMemberStatus.Creator)
         {
@@ -19,6 +18,7 @@ public class WordsAnalyzer
                 ParseMode.Html);
             return;
         }
+        var message = msg.Text.Split(' ');
         using (ApplicationContext db = new ApplicationContext())
         {
             var data = db.Chats
@@ -31,7 +31,7 @@ public class WordsAnalyzer
                     .Include(w => w.Words)
                     .FirstOrDefault(x => x.ChatId == msg.Chat.Id);
             }
-            if (data.Words == null) data.Words = new List<Word>();
+            if (data.Words == null) data.Words = new List<EntityList.Word>();
             foreach (var word in message)
             {
                 if (data.Words.Any(w => w.BlockWord.ToLower().Contains(word.ToLower())))
@@ -65,7 +65,7 @@ public class WordsAnalyzer
                     .Include(w => w.Words)
                     .FirstOrDefault(x => x.ChatId == msg.Chat.Id);
             }
-            if (data.Words == null) data.Words = new List<Word>();
+            if (data.Words == null) data.Words = new List<EntityList.Word>();
 
             if (data.Words.Any(w => w.BlockWord.ToLower().Contains(word.ToLower())))
             {
@@ -73,7 +73,7 @@ public class WordsAnalyzer
                 return;
             }
 
-            var newWord = new Word
+            var newWord = new EntityList.Word
             {
                 BlockWord = word
             };
