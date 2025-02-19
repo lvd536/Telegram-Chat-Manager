@@ -136,6 +136,7 @@ public class WordsAnalyzer
             {
                 message += $"\n<blockquote>{i}. {data.Words[i].BlockWord}</blockquote>";
             }
+            if (data.Words.Count < 1) message += "Пусто";
         }
         await botClient.SendMessage(msg.Chat.Id, message, ParseMode.Html);
     }
