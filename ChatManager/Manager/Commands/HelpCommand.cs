@@ -9,7 +9,7 @@ public static class HelpCommand
     public static async Task HelpCmd(ITelegramBotClient botClient, Message msg)
     {
         var helpMessage = 
-            "<b>🤖 Chat Manager Bot V2 - Полное руководство</b>\n\n" +
+            "<b>🤖 Chat Manager Bot V2.5 - Полное руководство</b>\n\n" +
             
             "<b>📋 Основная информация:</b>\n" +
             "<blockquote>Бот предназначен для управления чатом, отслеживания активности пользователей и модерации.</blockquote>\n\n" +

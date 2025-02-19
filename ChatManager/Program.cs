@@ -1,5 +1,6 @@
 ﻿using ChatManager.Manager;
 using ChatManager.Manager.Commands;
+using ChatManager.Manager.Commands.AdminTools;
 using Telegram.Bot;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
@@ -46,9 +47,9 @@ async Task OnMessage(Message msg, UpdateType type)
                 {
                     if (defArgument is null)
                     {
-                        await AdminTools.MuteUser(bot, msg,int.Parse(argument),"Не указана");
+                        await MuteCommand.MuteUser(bot, msg,int.Parse(argument),"Не указана");
                     }
-                    else await AdminTools.MuteUser(bot, msg,int.Parse(argument), defArgument);
+                    else await MuteCommand.MuteUser(bot, msg,int.Parse(argument), defArgument);
                 }
                 catch (Exception)
                 {
@@ -58,47 +59,46 @@ async Task OnMessage(Message msg, UpdateType type)
 
                 break;
             case "/unmute":
-                await AdminTools.UnMuteUser(bot, msg);
+                await MuteCommand.UnMuteUser(bot, msg);
                 break;
             case "/ban":
                 try
                 {
                     if (defArgument is null)
                     {
-                        await AdminTools.BanUser(bot, msg,int.Parse(argument),"Не указана");
+                        await BanCommand.BanUser(bot, msg,int.Parse(argument),"Не указана");
                     }
-                    else await AdminTools.BanUser(bot, msg,int.Parse(argument), defArgument);
+                    else await BanCommand.BanUser(bot, msg,int.Parse(argument), defArgument);
                 }
                 catch (Exception)
                 {
                     await bot.SendMessage(msg.Chat.Id,
                         "Неверно или вовсе не указано значение. Пример: /ban 30 (мут на 30 минут)", ParseMode.Html);
                 }
-
                 break;
             case "/unban":
-                await AdminTools.UnBanUser(bot, msg);
+                await BanCommand.UnBanUser(bot, msg);
                 break;
             case "/kick":
                 if (argument is null)
                 {
-                    await AdminTools.KickUser(bot, msg, "Не указана");
+                    await KickCommand.KickUser(bot, msg, "Не указана");
                 }
-                else await AdminTools.KickUser(bot, msg, argument);
+                else await KickCommand.KickUser(bot, msg, argument);
                 break;
             case "/warn":
                 if (argument is null)
                 {
-                    await AdminTools.WarnUser(bot, msg, "Не указана");
+                    await WarnCommand.WarnUser(bot, msg, "Не указана");
                 }
-                else await AdminTools.WarnUser(bot, msg, argument);
+                else await WarnCommand.WarnUser(bot, msg, argument);
 
                 break;
             case "/unwarn":
-                await AdminTools.UnWarnUser(bot, msg);
+                await WarnCommand.UnWarnUser(bot, msg);
                 break;
             case "/info":
-                await AdminTools.UserInfo(bot, msg);
+                await UserInfoCommand.UserInfo(bot, msg);
                 break;
             case "/help":
                 await HelpCommand.HelpCmd(bot, msg);
