@@ -8,13 +8,6 @@ using Telegram.Bot.Types.Enums;
 using var cts = new CancellationTokenSource();
 var bot = new TelegramBotClient("7371147310:AAEwln2CDIWVzYNTFHMdUwbzyzHod1qgDDQ", cancellationToken: cts.Token);
 var me = await bot.GetMe();
-var messageHandler = new MessageCounter();
-var startCommand = new StartCommand();
-var profileCommand = new ProfileCommand();
-var topCommand = new TopCommand();
-var adminTools = new AdminTools();
-var helpCommand = new HelpCommand();
-var messageAnalyzer = new WordsAnalyzer();
 bot.OnMessage += OnMessage;
 bot.OnUpdate += OnCallbackQuery;
 bot.OnError += OnError;
@@ -24,8 +17,8 @@ cts.Cancel();
 
 async Task OnMessage(Message msg, UpdateType type)
 {
-    await messageHandler.MessageCounterAsync(bot, msg, msg.Type);
-    await messageAnalyzer.MessageAnalyzer(bot, msg);
+    await MessageCounter.MessageCounterAsync(bot, msg, msg.Type);
+    await WordsAnalyzer.MessageAnalyzer(bot, msg);
     if (msg.Text is null) return;
     var commandParts = msg.Text.Split(' ');
     var command = commandParts[0];
@@ -36,26 +29,26 @@ async Task OnMessage(Message msg, UpdateType type)
         switch (command)
         {
             case "/start":
-                await startCommand.StartCmd(bot, msg);
+                await StartCommand.StartCmd(bot, msg);
                 break;
             case "/id":
                 await bot.SendMessage(msg.Chat.Id, $"ID пользователя {msg.From.FirstName}: {msg.From.Id}",
                     ParseMode.Html);
                 break;
             case "/profile":
-                await profileCommand.ProfileCmd(bot, msg);
+                await ProfileCommand.ProfileCmd(bot, msg);
                 break;
             case "/top":
-                await topCommand.TopCmd(bot, msg, 1);
+                await TopCommand.TopCmd(bot, msg, 1);
                 break;
             case "/mute":
                 try
                 {
                     if (defArgument is null)
                     {
-                        await adminTools.MuteUser(bot, msg,int.Parse(argument),"Не указана");
+                        await AdminTools.MuteUser(bot, msg,int.Parse(argument),"Не указана");
                     }
-                    else await adminTools.MuteUser(bot, msg,int.Parse(argument), defArgument);
+                    else await AdminTools.MuteUser(bot, msg,int.Parse(argument), defArgument);
                 }
                 catch (Exception)
                 {
@@ -65,16 +58,16 @@ async Task OnMessage(Message msg, UpdateType type)
 
                 break;
             case "/unmute":
-                await adminTools.UnMuteUser(bot, msg);
+                await AdminTools.UnMuteUser(bot, msg);
                 break;
             case "/ban":
                 try
                 {
                     if (defArgument is null)
                     {
-                        await adminTools.BanUser(bot, msg,int.Parse(argument),"Не указана");
+                        await AdminTools.BanUser(bot, msg,int.Parse(argument),"Не указана");
                     }
-                    else await adminTools.BanUser(bot, msg,int.Parse(argument), defArgument);
+                    else await AdminTools.BanUser(bot, msg,int.Parse(argument), defArgument);
                 }
                 catch (Exception)
                 {
@@ -84,48 +77,48 @@ async Task OnMessage(Message msg, UpdateType type)
 
                 break;
             case "/unban":
-                await adminTools.UnBanUser(bot, msg);
+                await AdminTools.UnBanUser(bot, msg);
                 break;
             case "/kick":
                 if (argument is null)
                 {
-                    await adminTools.KickUser(bot, msg, "Не указана");
+                    await AdminTools.KickUser(bot, msg, "Не указана");
                 }
-                else await adminTools.KickUser(bot, msg, argument);
+                else await AdminTools.KickUser(bot, msg, argument);
                 break;
             case "/warn":
                 if (argument is null)
                 {
-                    await adminTools.WarnUser(bot, msg, "Не указана");
+                    await AdminTools.WarnUser(bot, msg, "Не указана");
                 }
-                else await adminTools.WarnUser(bot, msg, argument);
+                else await AdminTools.WarnUser(bot, msg, argument);
 
                 break;
             case "/unwarn":
-                await adminTools.UnWarnUser(bot, msg);
+                await AdminTools.UnWarnUser(bot, msg);
                 break;
             case "/info":
-                await adminTools.UserInfo(bot, msg);
+                await AdminTools.UserInfo(bot, msg);
                 break;
             case "/help":
-                await helpCommand.HelpCmd(bot, msg);
+                await HelpCommand.HelpCmd(bot, msg);
                 break;
             case "/add":
                 if (argument is null)
                 {
                     await bot.SendMessage(msg.Chat.Id, "Слово не указано.", ParseMode.Html);
                 }
-                else await messageAnalyzer.AddWord(bot, msg, argument);
+                else await WordsAnalyzer.AddWord(bot, msg, argument);
                 break;
             case "/blocklist":
-                await messageAnalyzer.ListWords(bot, msg);
+                await WordsAnalyzer.ListWords(bot, msg);
                 break;
             case "/remove":
                 if (argument is null)
                 {
                     await bot.SendMessage(msg.Chat.Id, "Слово не указано.", ParseMode.Html);
                 }
-                else await messageAnalyzer.RemoveWord(bot, msg, argument);
+                else await WordsAnalyzer.RemoveWord(bot, msg, argument);
                 break;
         }
     }
@@ -142,31 +135,31 @@ async Task OnCallbackQuery(Update update)
                 ParseMode.Html);
             break;
         case "TopByLevel":
-            await topCommand.TopCmd(bot, update.CallbackQuery.Message ?? new Message(), 1);
+            await TopCommand.TopCmd(bot, update.CallbackQuery.Message ?? new Message(), 1);
             break;
         case "TopByMessages":
-            await topCommand.TopCmd(bot, update.CallbackQuery.Message ?? new Message(), 2);
+            await TopCommand.TopCmd(bot, update.CallbackQuery.Message ?? new Message(), 2);
             break;
         case "TopByTextMessages":
-            await topCommand.TopCmd(bot, update.CallbackQuery.Message ?? new Message(), 3);
+            await TopCommand.TopCmd(bot, update.CallbackQuery.Message ?? new Message(), 3);
             break;
         case "TopByAudioMessages":
-            await topCommand.TopCmd(bot, update.CallbackQuery.Message ?? new Message(), 4);
+            await TopCommand.TopCmd(bot, update.CallbackQuery.Message ?? new Message(), 4);
             break;
         case "TopByVideoMessages":
-            await topCommand.TopCmd(bot, update.CallbackQuery.Message ?? new Message(), 5);
+            await TopCommand.TopCmd(bot, update.CallbackQuery.Message ?? new Message(), 5);
             break;
         case "TopBySticker":
-            await topCommand.TopCmd(bot, update.CallbackQuery.Message ?? new Message(), 6);
+            await TopCommand.TopCmd(bot, update.CallbackQuery.Message ?? new Message(), 6);
             break;
         case "TopByPhoto":
-            await topCommand.TopCmd(bot, update.CallbackQuery.Message ?? new Message(), 7);
+            await TopCommand.TopCmd(bot, update.CallbackQuery.Message ?? new Message(), 7);
             break;
         case "TopByLocation":
-            await topCommand.TopCmd(bot, update.CallbackQuery.Message ?? new Message(), 8);
+            await TopCommand.TopCmd(bot, update.CallbackQuery.Message ?? new Message(), 8);
             break;
         case "TopByOther":
-            await topCommand.TopCmd(bot, update.CallbackQuery.Message ?? new Message(), 9);
+            await TopCommand.TopCmd(bot, update.CallbackQuery.Message ?? new Message(), 9);
             break;
     }
 }

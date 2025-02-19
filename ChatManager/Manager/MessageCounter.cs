@@ -6,9 +6,9 @@ using Telegram.Bot;
 using Telegram.Bot.Types;
 using Database;
 
-public class MessageCounter
+public static class MessageCounter
 {
-    public async Task MessageCounterAsync(ITelegramBotClient botClient, Message msg, MessageType type)
+    public static async Task MessageCounterAsync(ITelegramBotClient botClient, Message msg, MessageType type)
     {
         using (ApplicationContext db = new ApplicationContext())
         {
@@ -40,7 +40,7 @@ public class MessageCounter
         }
     }
 
-    private long CalculatePoints(MessageType type)
+    private static long CalculatePoints(MessageType type)
     {
         if (type == MessageType.Text) return 5;
         if (type == MessageType.Audio) return 10;
@@ -51,7 +51,7 @@ public class MessageCounter
         return 15;
     }
 
-    private long CalculateLevel(long level)
+    private static long CalculateLevel(long level)
     {
         if (level <= 5) return (1500 * level);
         else if (level <= 10) return (250 * level);

@@ -4,9 +4,9 @@ using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
 
 namespace ChatManager.Manager.Commands;
-public class HelpCommand
+public static class HelpCommand
 {
-    public async Task HelpCmd(ITelegramBotClient botClient, Message msg)
+    public static async Task HelpCmd(ITelegramBotClient botClient, Message msg)
     {
         var helpMessage = 
             "<b>🤖 Chat Manager Bot V2 - Полное руководство</b>\n\n" +

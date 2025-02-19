@@ -7,9 +7,9 @@ using Telegram.Bot.Types.ReplyMarkups;
 
 namespace ChatManager.Manager.Commands;
 
-public class ProfileCommand
+public static class ProfileCommand
 {
-    public async Task ProfileCmd(ITelegramBotClient botClient, Message msg)
+    public static async Task ProfileCmd(ITelegramBotClient botClient, Message msg)
     {
         using (ApplicationContext db = new ApplicationContext())
         {

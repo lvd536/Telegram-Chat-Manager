@@ -6,9 +6,9 @@ using Telegram.Bot.Types.Enums;
 
 namespace ChatManager.Manager.Commands;
 
-public class AdminTools
+public static class AdminTools
 {
-    public async Task MuteUser(ITelegramBotClient botClient, Message msg, int duration, string description)
+    public static async Task MuteUser(ITelegramBotClient botClient, Message msg, int duration, string description)
     {
         var member = await botClient.GetChatMember(msg.Chat.Id, msg.From.Id);
         if (msg.ReplyToMessage is null) return;
@@ -63,7 +63,7 @@ public class AdminTools
         }
     }
 
-    public async Task UnMuteUser(ITelegramBotClient botClient, Message msg)
+    public static async Task UnMuteUser(ITelegramBotClient botClient, Message msg)
     {
         var member = await botClient.GetChatMember(msg.Chat.Id, msg.From.Id);
         if (msg.ReplyToMessage is null) return;
@@ -92,7 +92,7 @@ public class AdminTools
             $"Успешно снят мут пользователю {msg.ReplyToMessage.From.FirstName}!");
     }
 
-    public async Task KickUser(ITelegramBotClient botClient, Message msg, string description)
+    public static async Task KickUser(ITelegramBotClient botClient, Message msg, string description)
     {
         var member = await botClient.GetChatMember(msg.Chat.Id, msg.From.Id);
         if (msg.ReplyToMessage is null) return;
@@ -132,7 +132,7 @@ public class AdminTools
         }
     }
 
-    public async Task BanUser(ITelegramBotClient botClient, Message msg, int duration, string description)
+    public static async Task BanUser(ITelegramBotClient botClient, Message msg, int duration, string description)
     {
         var member = await botClient.GetChatMember(msg.Chat.Id, msg.From.Id);
         if (msg.ReplyToMessage is null) return;
@@ -173,7 +173,7 @@ public class AdminTools
         }
     }
 
-    public async Task UnBanUser(ITelegramBotClient botClient, Message msg)
+    public static async Task UnBanUser(ITelegramBotClient botClient, Message msg)
     {
         var member = await botClient.GetChatMember(msg.Chat.Id, msg.From.Id);
         if (msg.ReplyToMessage is null) return;
@@ -190,7 +190,7 @@ public class AdminTools
             ParseMode.Html);
     }
 
-    public async Task WarnUser(ITelegramBotClient botClient, Message msg, string description)
+    public static async Task WarnUser(ITelegramBotClient botClient, Message msg, string description)
     {
         var member = await botClient.GetChatMember(msg.Chat.Id, msg.From.Id);
         if (msg.ReplyToMessage is null) return;
@@ -244,7 +244,7 @@ public class AdminTools
         }
     }
 
-    public async Task UnWarnUser(ITelegramBotClient botClient, Message msg)
+    public static async Task UnWarnUser(ITelegramBotClient botClient, Message msg)
     {
         var member = await botClient.GetChatMember(msg.Chat.Id, msg.From.Id);
         if (msg.ReplyToMessage is null) return;
@@ -289,7 +289,7 @@ public class AdminTools
         }
     }
 
-    public async Task UserInfo(ITelegramBotClient botClient, Message msg)
+    public static async Task UserInfo(ITelegramBotClient botClient, Message msg)
     {
         var member = await botClient.GetChatMember(msg.Chat.Id, msg.From.Id);
         if (msg.ReplyToMessage is null) return;

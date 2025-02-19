@@ -6,9 +6,9 @@ using Telegram.Bot.Types.ReplyMarkups;
 
 namespace ChatManager.Manager.Commands;
 
-public class StartCommand
+public static class StartCommand
 {
-    public async Task StartCmd(ITelegramBotClient botClient, Message msg)
+    public static async Task StartCmd(ITelegramBotClient botClient, Message msg)
     {
         await DbMethods.InitializeUserAsync(msg);
         

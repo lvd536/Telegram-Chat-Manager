@@ -8,7 +8,7 @@ namespace ChatManager.Manager;
 
 public class WordsAnalyzer
 {
-    public async Task MessageAnalyzer(ITelegramBotClient botClient, Message msg)
+    public static async Task MessageAnalyzer(ITelegramBotClient botClient, Message msg)
     {
         if (msg.Text is null || msg.Text.StartsWith('/')) return;
         var message = msg.Text.Split(' ');
@@ -37,7 +37,7 @@ public class WordsAnalyzer
             }
         }
     }
-    public async Task AddWord(ITelegramBotClient botClient, Message msg, string word)
+    public static async Task AddWord(ITelegramBotClient botClient, Message msg, string word)
     {
         var member = await botClient.GetChatMember(msg.Chat.Id, msg.From.Id);
         if (member.Status != ChatMemberStatus.Administrator && member.Status != ChatMemberStatus.Creator)
@@ -75,7 +75,7 @@ public class WordsAnalyzer
             await botClient.SendMessage(msg.Chat.Id, $"Слово {word} успешно добавлено в список запрещенных слов!");
         }
     }
-    public async Task RemoveWord(ITelegramBotClient botClient, Message msg, string word)
+    public static async Task RemoveWord(ITelegramBotClient botClient, Message msg, string word)
     {
         var member = await botClient.GetChatMember(msg.Chat.Id, msg.From.Id);
         if (member.Status != ChatMemberStatus.Administrator && member.Status != ChatMemberStatus.Creator)
@@ -109,7 +109,7 @@ public class WordsAnalyzer
             await botClient.SendMessage(msg.Chat.Id, $"Слово {word} успешно удалено из списка запрещенных слов!");
         }
     }
-    public async Task ListWords(ITelegramBotClient botClient, Message msg)
+    public static async Task ListWords(ITelegramBotClient botClient, Message msg)
     {
         var member = await botClient.GetChatMember(msg.Chat.Id, msg.From.Id);
         if (member.Status != ChatMemberStatus.Administrator && member.Status != ChatMemberStatus.Creator)

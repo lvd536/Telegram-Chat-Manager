@@ -3,7 +3,7 @@ using Telegram.Bot.Types;
 
 namespace ChatManager.Database;
 
-public class DbMethods
+public static class DbMethods
 {
     public static async Task InitializeUserAsync(Message message)
     {
