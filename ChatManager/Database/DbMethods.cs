@@ -40,4 +40,20 @@ public static class DbMethods
             }
         }
     }
+
+    /*public static async Task<EntityList.Chat> GetChatAsync(long chatId)
+    {
+        using (ApplicationContext db = new ApplicationContext())
+        {
+            if (db.Chats.Any(c => c.ChatId == chatId))
+            {
+                var chat = db.Chats
+                    .Include(c => c.Users)
+                    .Include(c => c.Words)
+                    .FirstOrDefault(c => c.ChatId == chatId);
+                return chat;
+            }
+        }
+        return;
+    }*/
 }

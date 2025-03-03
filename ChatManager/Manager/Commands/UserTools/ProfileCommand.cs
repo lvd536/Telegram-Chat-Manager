@@ -22,8 +22,8 @@ public static class ProfileCommand
                           $"✨ Опыт: {currentUser.Points}\n" +
                           $"📊 Всего сообщений: {currentUser.Messages}\n" +
                           $"💬 Текстовых сообщений: {currentUser.TextMessages}\n" +
-                          $"🎤 Голосовых сообщений: {currentUser.AudioMessages}\n" +
-                          $"⭕️ Кружков: {currentUser.VideoMessages}\n" +
+                          $"🎤 Аудио сообщений: {currentUser.AudioMessages}\n" +
+                          $"⭕️ Видео: {currentUser.VideoMessages}\n" +
                           $"😀 Стикеров: {currentUser.StickerMessages}\n" +
                           $"📷 Фото: {currentUser.PhotoMessages}\n" +
                           $"📍 Гео: {currentUser.LocationMessages}\n" +

@@ -23,9 +23,9 @@ public static class TopCommand
                 .AddButton("📊 Топ по всем сообщениям", "TopByMessages")
                 .AddNewRow()
                 .AddButton("💬 Топ по текстовым", "TopByTextMessages")
-                .AddButton("🎤 Топ по голосовым", "TopByAudioMessages")
+                .AddButton("🎤 Топ по аудио", "TopByAudioMessages")
                 .AddNewRow()
-                .AddButton("⭕️ Топ по кружкам", "TopByVideoMessages")
+                .AddButton("⭕️ Топ по видео", "TopByVideoMessages")
                 .AddButton("😀 Топ по стикерам", "TopBySticker")
                 .AddNewRow()
                 .AddButton("📷 Топ по фото", "TopByPhoto")
@@ -81,10 +81,10 @@ public static class TopCommand
                     break;
                 case 4:
                     users.Sort((a, b) => (int)(b.AudioMessages - a.AudioMessages));
-                    message = $"🎤 Топ пользователей по голосовым: ";
+                    message = $"🎤 Топ пользователей по аудио: ";
                     foreach (var u in users)
                     {
-                        message += $"\n<blockquote>{u.UserName} - {u.AudioMessages} голосовых</blockquote>";
+                        message += $"\n<blockquote>{u.UserName} - {u.AudioMessages} аудио</blockquote>";
                     }
                     try {
                         await botClient.EditMessageText(msg.Chat.Id, msg.Id, message, ParseMode.Html,
@@ -96,10 +96,10 @@ public static class TopCommand
                     break;
                 case 5:
                     users.Sort((a, b) => (int)(b.VideoMessages - a.VideoMessages));
-                    message = $"⭕️ Топ пользователей по кружкам: ";
+                    message = $"⭕️ Топ пользователей по видео: ";
                     foreach (var u in users)
                     {
-                        message += $"\n<blockquote>{u.UserName} - {u.VideoMessages} кружков</blockquote>";
+                        message += $"\n<blockquote>{u.UserName} - {u.VideoMessages} видео</blockquote>";
                     }
                     try {
                         await botClient.EditMessageText(msg.Chat.Id, msg.Id, message, ParseMode.Html,
