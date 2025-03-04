@@ -120,6 +120,9 @@ async Task OnMessage(Message msg, UpdateType type)
                 }
                 else await WordsAnalyzer.RemoveWord(bot, msg, argument);
                 break;
+            case "/devblog":
+                await DevblogCommand.DevblogCommandAsync(bot, msg);
+                break;
         }
     }
 }
