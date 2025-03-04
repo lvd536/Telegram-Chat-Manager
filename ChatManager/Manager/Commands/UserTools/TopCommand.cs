@@ -31,6 +31,7 @@ public static class TopCommand
                 .AddButton("📷 Топ по фото", "TopByPhoto")
                 .AddButton("📍 Топ по гео", "TopByLocation")
                 .AddNewRow()
+                .AddButton("🔊 Топ по голосовым", "TopByVoice")
                 .AddButton("📦 Топ по другим сообщениям", "TopByOther");
             switch (type)
             {
@@ -160,6 +161,21 @@ public static class TopCommand
                     foreach (var u in users)
                     {
                         message += $"\n<blockquote>{u.UserName} - {u.OtherMessages} других сообщений</blockquote>";
+                    }
+                    try {
+                        await botClient.EditMessageText(msg.Chat.Id, msg.Id, message, ParseMode.Html,
+                            replyMarkup: keyboard);
+                    }
+                    catch (Exception) {
+                        await botClient.SendMessage(msg.Chat.Id, message, ParseMode.Html, replyMarkup: keyboard);
+                    }
+                    break;
+                case 10:
+                    users.Sort((a, b) => (int)(b.VoiceMessages - a.VoiceMessages));
+                    message = $"🔊 Топ пользователей по голосовым: ";
+                    foreach (var u in users)
+                    {
+                        message += $"\n<blockquote>{u.UserName} - {u.VoiceMessages} голосовых</blockquote>";
                     }
                     try {
                         await botClient.EditMessageText(msg.Chat.Id, msg.Id, message, ParseMode.Html,

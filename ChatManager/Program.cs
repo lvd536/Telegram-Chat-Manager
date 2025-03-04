@@ -7,7 +7,7 @@ using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
 using var cts = new CancellationTokenSource();
-var bot = new TelegramBotClient("7975559064:AAEznAlv6y4xF60E644JzJEZKeWOOPGVjVg", cancellationToken: cts.Token);
+var bot = new TelegramBotClient("token", cancellationToken: cts.Token);
 var me = await bot.GetMe();
 bot.OnMessage += OnMessage;
 bot.OnUpdate += OnCallbackQuery;
@@ -160,6 +160,9 @@ async Task OnCallbackQuery(Update update)
             break;
         case "TopByOther":
             await TopCommand.TopCmd(bot, update.CallbackQuery.Message ?? new Message(), 9);
+            break;
+        case "TopByVoice":
+            await TopCommand.TopCmd(bot, update.CallbackQuery.Message ?? new Message(), 10);
             break;
     }
 }

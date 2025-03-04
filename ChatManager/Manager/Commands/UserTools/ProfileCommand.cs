@@ -23,6 +23,7 @@ public static class ProfileCommand
                           $"📊 Всего сообщений: {currentUser.Messages}\n" +
                           $"💬 Текстовых сообщений: {currentUser.TextMessages}\n" +
                           $"🎤 Аудио сообщений: {currentUser.AudioMessages}\n" +
+                          $"🔊 Голосовых сообщений: {currentUser.VoiceMessages}\n" +
                           $"⭕️ Видео: {currentUser.VideoMessages}\n" +
                           $"😀 Стикеров: {currentUser.StickerMessages}\n" +
                           $"📷 Фото: {currentUser.PhotoMessages}\n" +
