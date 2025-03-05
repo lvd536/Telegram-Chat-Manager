@@ -25,6 +25,7 @@ public class WordsAnalyzer
                     .FirstOrDefault(x => x.ChatId == msg.Chat.Id);
             }
             if (data.Words == null) data.Words = new List<EntityList.Word>();
+            if (data.Words.Count <= 0) return;
             foreach (var word in message)
             {
                 if (data.Words.Any(w => w.BlockWord.ToLower().Contains(word.ToLower())))

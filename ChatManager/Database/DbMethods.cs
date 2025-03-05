@@ -18,7 +18,7 @@ public static class DbMethods
             {
                 var newChat = new EntityList.Chat
                 {
-                    ChatId = message.Chat.Id,
+                    ChatId = message.Chat.Id
                 };
                 db.Chats.Add(newChat);
                 await db.SaveChangesAsync();
@@ -35,25 +35,9 @@ public static class DbMethods
                     UserId = message.From.Id,
                     IsAdmin = false
                 };
-                userData.Users.Add(newUser);
+                userData?.Users.Add(newUser);
                 await db.SaveChangesAsync();
             }
         }
     }
-
-    /*public static async Task<EntityList.Chat> GetChatAsync(long chatId)
-    {
-        using (ApplicationContext db = new ApplicationContext())
-        {
-            if (db.Chats.Any(c => c.ChatId == chatId))
-            {
-                var chat = db.Chats
-                    .Include(c => c.Users)
-                    .Include(c => c.Words)
-                    .FirstOrDefault(c => c.ChatId == chatId);
-                return chat;
-            }
-        }
-        return;
-    }*/
 }
