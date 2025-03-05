@@ -30,6 +30,7 @@ public static class MessageCounter
             else if (type == MessageType.Photo) currentUser.PhotoMessages++;
             else if (type == MessageType.Location) currentUser.LocationMessages++;
             else if (type == MessageType.Voice) currentUser.VoiceMessages++;
+            else if (type == MessageType.VideoNote) currentUser.VideoNotesMessages++;
             else currentUser.OtherMessages++;
             currentUser.Points += CalculatePoints(type);
             if (currentUser.Points >= CalculateLevel(currentUser.Level))

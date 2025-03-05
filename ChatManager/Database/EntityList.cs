@@ -19,6 +19,7 @@ public class EntityList
         public long AudioMessages { get; set; }
         public long VoiceMessages { get; set; }
         public long VideoMessages { get; set; }
+        public long VideoNotesMessages { get; set; }
         public long StickerMessages { get; set; }
         public long PhotoMessages { get; set; }
         public long LocationMessages { get; set; }

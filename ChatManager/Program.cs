@@ -167,6 +167,9 @@ async Task OnCallbackQuery(Update update)
         case "TopByVoice":
             await TopCommand.TopCmd(bot, update.CallbackQuery.Message ?? new Message(), 10);
             break;
+        case "TopByCircle":
+            await TopCommand.TopCmd(bot, update.CallbackQuery.Message ?? new Message(), 11);
+            break;
     }
 }
 

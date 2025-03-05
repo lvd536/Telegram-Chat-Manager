@@ -25,6 +25,7 @@ public static class ProfileCommand
                           $"🎤 Аудио сообщений: {currentUser.AudioMessages}\n" +
                           $"🔊 Голосовых сообщений: {currentUser.VoiceMessages}\n" +
                           $"⭕️ Видео: {currentUser.VideoMessages}\n" +
+                          $"🔵 Кружков: {currentUser.VideoNotesMessages}\n" +
                           $"😀 Стикеров: {currentUser.StickerMessages}\n" +
                           $"📷 Фото: {currentUser.PhotoMessages}\n" +
                           $"📍 Гео: {currentUser.LocationMessages}\n" +
