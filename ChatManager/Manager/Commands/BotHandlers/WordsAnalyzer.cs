@@ -6,7 +6,7 @@ using Telegram.Bot.Types.Enums;
 
 namespace ChatManager.Manager;
 
-public class WordsAnalyzer
+public static class WordsAnalyzer
 {
     public static async Task MessageAnalyzer(ITelegramBotClient botClient, Message msg)
     {
@@ -28,12 +28,13 @@ public class WordsAnalyzer
             if (data.Words.Count <= 0) return;
             foreach (var word in message)
             {
-                if (data.Words.Any(w => w.BlockWord.ToLower().Contains(word.ToLower())))
+                if (data.Words.Any(w => w.BlockWord == word.ToLower()))
                 {
                     await botClient.DeleteMessage(msg.Chat.Id, msg.Id);
                     await botClient.SendMessage(msg.Chat.Id,
                         $"Сообщение с содержанием <em>{msg.Text}</em> было удалено т.к содержит запрещенное выражение.",
                         ParseMode.Html);
+                    Console.WriteLine($"Удалено: {msg.Text}, совпадение с {word}");
                 }
             }
         }

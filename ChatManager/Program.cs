@@ -1,6 +1,7 @@
 ﻿using ChatManager.Manager;
 using ChatManager.Manager.Commands;
 using ChatManager.Manager.Commands.AdminTools;
+using ChatManager.Manager.Commands.Games;
 using Telegram.Bot;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
@@ -122,6 +123,9 @@ async Task OnMessage(Message msg, UpdateType type)
                 break;
             case "/devblog":
                 await DevblogCommand.DevblogCommandAsync(bot, msg);
+                break;
+            case "/chance":
+                await ChanceCommand.ChanceCommandAsync(bot, msg);
                 break;
         }
     }
