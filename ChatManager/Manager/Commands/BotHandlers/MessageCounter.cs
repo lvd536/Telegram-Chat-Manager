@@ -32,7 +32,7 @@ public static class MessageCounter
             else if (type == MessageType.Voice) currentUser.VoiceMessages++;
             else if (type == MessageType.VideoNote) currentUser.VideoNotesMessages++;
             else currentUser.OtherMessages++;
-            currentUser.Points += CalculatePoints(type);
+            currentUser.Points += CalculatePoints(type, msg);
             if (currentUser.Points >= CalculateLevel(currentUser.Level))
             {
                 currentUser.Level++;
@@ -42,9 +42,9 @@ public static class MessageCounter
         }
     }
 
-    private static long CalculatePoints(MessageType type)
+    private static long CalculatePoints(MessageType type, Message message)
     {
-        if (type == MessageType.Text) return 5;
+        if (type == MessageType.Text) return Math.Max((int)(message.Text.Length * 0.2), 5);
         if (type == MessageType.Audio) return 10;
         if (type == MessageType.Video) return 20;
         if (type == MessageType.Sticker) return 25;
