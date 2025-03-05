@@ -127,6 +127,9 @@ async Task OnMessage(Message msg, UpdateType type)
             case "/chance":
                 await ChanceCommand.ChanceCommandAsync(bot, msg);
                 break;
+            case "/quote":
+                await QuoteCommand.QuoteCommandAsync(bot, msg);
+                break;
         }
     }
 }
