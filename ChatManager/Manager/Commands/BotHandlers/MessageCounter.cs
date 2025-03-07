@@ -41,36 +41,69 @@ public static class MessageCounter
             await db.SaveChangesAsync();
         }
     }
-
     private static long CalculatePoints(MessageType type, Message message)
     {
-        if (type == MessageType.Text) return Math.Max((int)(message.Text.Length * 0.2), 5);
-        if (type == MessageType.Audio) return 10;
-        if (type == MessageType.Video) return 20;
-        if (type == MessageType.Sticker) return 25;
-        if (type == MessageType.Photo) return 30;
-        if (type == MessageType.Location) return 40;
-        return 15;
+        switch (type)
+        {
+            case MessageType.Text:
+                return message.Text != null ? Math.Max((int)(message.Text.Length * 0.2), 5) : 0;
+            case MessageType.Audio:
+                return 10;
+            case MessageType.Video:
+                return 20;
+            case MessageType.Sticker:
+                return 25;
+            case MessageType.Photo:
+                return 30;
+            case MessageType.Location:
+                return 40;
+            case MessageType.Voice:
+                return 25;
+            case MessageType.VideoNote:
+                return 35;
+            default:
+                return 15;
+        }
     }
 
     private static long CalculateLevel(long level)
     {
-        if (level <= 5) return (1500 * level);
-        else if (level <= 10) return (250 * level);
-        else if (level <= 20) return (350 * level);
-        else if (level <= 30) return (550 * level);
-        else if (level <= 40) return (750 * level);
-        else if (level <= 50) return (950 * level); 
-        else if (level <= 60) return (1150 * level);
-        else if (level <= 70) return (1350 * level);
-        else if (level <= 80) return (1550 * level);
-        else if (level <= 90) return (1750 * level);
-        else if (level <= 100) return (1950 * level);
-        else if (level <= 150) return (2500 * level);
-        else if (level <= 160) return (2700 * level);
-        else if (level <= 170) return (2900 * level);
-        else if (level <= 180) return (3100 * level);
-        else if (level <= 190) return (3300 * level);
-        else return (4000 * level);
+        switch (level)
+        {
+            case <= 5: 
+                return 150 * level;
+            case <= 10: 
+                return 250 * level;
+            case <= 20: 
+                return 350 * level;
+            case <= 30: 
+                return 550 * level;
+            case <= 40: 
+                return 750 * level;
+            case <= 50: 
+                return 950 * level;
+            case <= 60: 
+                return 1150 * level;
+            case <= 70: 
+                return 1350 * level;
+            case <= 80: 
+                return 1550 * level;
+            case <= 90: 
+                return 1750 * level;
+            case <= 100: 
+                return 1950 * level;
+            case <= 150: 
+                return 2500 * level;
+            case <= 160: 
+                return 2700 * level;
+            case <= 170: 
+                return 2900 * level;
+            case <= 180: 
+                return 3000 * level;
+            case <= 190: 
+                return 3500 * level;
+            case > 190: 
+                return 4000 * level;
+        }
     }
 }
