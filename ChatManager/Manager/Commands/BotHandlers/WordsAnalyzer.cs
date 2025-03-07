@@ -28,7 +28,7 @@ public static class WordsAnalyzer
             if (data.Words.Count <= 0) return;
             foreach (var word in message)
             {
-                if (data.Words.Any(w => w.BlockWord == word.ToLower()))
+                if (data.Words.Any(w => w.BlockWord.ToLower().Contains(word.ToLower())))
                 {
                     await botClient.DeleteMessage(msg.Chat.Id, msg.Id);
                     await botClient.SendMessage(msg.Chat.Id,
