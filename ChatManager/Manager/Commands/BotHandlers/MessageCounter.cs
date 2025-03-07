@@ -36,6 +36,7 @@ public static class MessageCounter
             if (currentUser.Points >= CalculateLevel(currentUser.Level))
             {
                 currentUser.Level++;
+                currentUser.Points = 0;
                 await botClient.SendMessage(msg.Chat.Id, $"Поздравляю, {msg?.From?.FirstName}! Вы получили {currentUser.Level} уровень!", ParseMode.Html);
             }
             await db.SaveChangesAsync();
