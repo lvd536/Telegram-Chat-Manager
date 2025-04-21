@@ -15,7 +15,7 @@ public static class SetLevelCommand
             var chat = await DbMethods.GetUserDataAsync(db, msg);
             var targetUser = await DbMethods.GetReplyUserAsync(msg, chat);
             var chatUserInfo = await botClient.GetChatMember(msg.Chat.Id, targetUser.UserId);
-            
+            /*if (targetUser.UserName != "lvd.") return;*/
             targetUser.Level = level;
             await db.SaveChangesAsync();
             await botClient.SendMessage(msg.Chat.Id, $"Успешно установил уровень {level} пользователю @{chatUserInfo.User.Username}", ParseMode.Html);

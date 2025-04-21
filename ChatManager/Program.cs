@@ -1,6 +1,7 @@
 ﻿using ChatManager.Manager;
 using ChatManager.Manager.Commands;
 using ChatManager.Manager.Commands.AdminTools;
+using ChatManager.Manager.Commands.AdminTools.CreatorCommands;
 using ChatManager.Manager.Commands.Games;
 using Telegram.Bot;
 using Telegram.Bot.Polling;
@@ -130,6 +131,15 @@ async Task OnMessage(Message msg, UpdateType type)
                 break;
             case "/quote":
                 await QuoteCommand.QuoteCommandAsync(bot, msg);
+                break;
+            case "/editLevel":
+                if (int.TryParse(argument, out int editLevelValue))
+                {
+                    await SetLevelCommand.SetLevelAsync(bot, msg, editLevelValue);
+                }
+                break;
+            case "/checkLevel":
+                await CheckLevelCommand.CheckUserLevel(bot, msg);
                 break;
         }
     }

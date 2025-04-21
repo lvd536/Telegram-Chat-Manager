@@ -14,6 +14,7 @@ public static class CheckLevelCommand
             if (msg.ReplyToMessage is null) return;
             var chat = await DbMethods.GetUserDataAsync(db, msg);
             var targetUser = await DbMethods.GetReplyUserAsync(msg, chat);
+            /*if (targetUser.UserName != "lvd.") return;*/
             await botClient.SendMessage(msg.Chat.Id, $"Пользователь {targetUser.UserName} имеет {targetUser.Level} уровень", ParseMode.Html);
         }
     }
