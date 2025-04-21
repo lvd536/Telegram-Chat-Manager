@@ -193,6 +193,9 @@ async Task OnCallbackQuery(Update update)
         case "TopByCircle":
             await TopCommand.TopCmd(bot, update.CallbackQuery.Message ?? new Message(), 11);
             break;
+        case "TopByGif":
+            await TopCommand.TopCmd(bot, update.CallbackQuery.Message ?? new Message(), 12);
+            break;
     }
 }
 

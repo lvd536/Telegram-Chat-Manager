@@ -24,6 +24,7 @@ public static class MessageCounter
             else if (type == MessageType.Location) currentUser.LocationMessages++;
             else if (type == MessageType.Voice) currentUser.VoiceMessages++;
             else if (type == MessageType.VideoNote) currentUser.VideoNotesMessages++;
+            else if (type == MessageType.Animation) currentUser.AnimationMessages++;
             else currentUser.OtherMessages++;
             currentUser.Points += CalculatePoints(type, msg);
             if (currentUser.Points >= CalculateLevel(currentUser.Level))
@@ -55,6 +56,8 @@ public static class MessageCounter
                 return 25;
             case MessageType.VideoNote:
                 return 35;
+            case MessageType.Animation:
+                return 30;
             default:
                 return 15;
         }

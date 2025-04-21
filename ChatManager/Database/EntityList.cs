@@ -23,6 +23,7 @@ public class EntityList
         public long StickerMessages { get; set; }
         public long PhotoMessages { get; set; }
         public long LocationMessages { get; set; }
+        public long AnimationMessages { get; set; }
         public long OtherMessages { get; set; }
         public long Level { get; set; } = 1;
         public long Points { get; set; }
