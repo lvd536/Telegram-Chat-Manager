@@ -3,6 +3,7 @@ using ChatManager.Manager.Commands;
 using ChatManager.Manager.Commands.AdminTools;
 using ChatManager.Manager.Commands.AdminTools.CreatorCommands;
 using ChatManager.Manager.Commands.Games;
+using ChatManager.Manager.Commands.Weather;
 using Telegram.Bot;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
@@ -12,6 +13,7 @@ using var cts = new CancellationTokenSource();
 var bot = new TelegramBotClient("8048549299:AAG3MDOkOODjP5n4-P5VqNI7dwp0r4smkuQ", cancellationToken: cts.Token);
 // 7975559064:AAEznAlv6y4xF60E644JzJEZKeWOOPGVjVg - chat manager stoshka
 var me = await bot.GetMe();
+var weather = new WeatherCommand();
 bot.OnMessage += OnMessage;
 bot.OnUpdate += OnCallbackQuery;
 bot.OnError += OnError;
@@ -140,6 +142,9 @@ async Task OnMessage(Message msg, UpdateType type)
                 break;
             case "/checkLevel":
                 await CheckLevelCommand.CheckUserLevel(bot, msg);
+                break;
+            case "/weather":
+                await weather.WeatherCmd(bot, msg);
                 break;
         }
     }
