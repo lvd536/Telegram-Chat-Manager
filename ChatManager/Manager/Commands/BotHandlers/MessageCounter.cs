@@ -12,15 +12,8 @@ public static class MessageCounter
     {
         using (ApplicationContext db = new ApplicationContext())
         {
-            var userData = await db.Chats
-                .Include(c => c.Users)
-                .FirstOrDefaultAsync(u => u.ChatId == msg.Chat.Id);
-            var currentUser = userData?.Users?.FirstOrDefault(u => u.UserId == msg.From?.Id);
-            if (userData is null || currentUser is null)
-            {
-                await DbMethods.InitializeUserAsync(msg);
-                return;
-            }
+            var userData = await DbMethods.GetUserDataAsync(db, msg);
+            var currentUser = await DbMethods.GetUserAsync(msg, userData);
 
             currentUser.Messages++;
             if (type == MessageType.Audio) currentUser.AudioMessages++;

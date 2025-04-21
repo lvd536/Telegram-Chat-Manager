@@ -10,7 +10,7 @@ public static class MuteCommand
 {
         public static async Task MuteUser(ITelegramBotClient botClient, Message msg, int duration, string description)
     {
-        var member = await botClient.GetChatMember(msg.Chat.Id, msg.From.Id);
+        var member = await DbMethods.GetMemberAsync(botClient, msg);
         if (msg.ReplyToMessage is null) return;
         if (member.Status != ChatMemberStatus.Administrator && member.Status != ChatMemberStatus.Creator)
         {
@@ -21,22 +21,8 @@ public static class MuteCommand
 
         using (ApplicationContext db = new ApplicationContext())
         {
-            var userData = db.Chats
-                .Include(u => u.Users)
-                .ThenInclude(u => u.Mutes)
-                .FirstOrDefault(u => u.ChatId == msg.Chat.Id);
-            var currentUser = userData?.Users?.FirstOrDefault(u => u.UserId == msg.ReplyToMessage.From?.Id);
-            if (currentUser is null || userData is null)
-            {
-                await DbMethods.InitializeUserAsync(msg);
-                userData = db.Chats
-                    .Include(u => u.Users)
-                    .ThenInclude(u => u.Mutes)
-                    .FirstOrDefault(u => u.ChatId == msg.Chat.Id);
-                currentUser = userData?.Users?.FirstOrDefault(u => u.UserId == msg.ReplyToMessage.From?.Id);
-            }
-
-            if (currentUser.Mutes == null) currentUser.Mutes = new List<EntityList.Mute>();
+            var userData = await DbMethods.GetUserDataAsync(db, msg);
+            var currentUser = await DbMethods.GetReplyUserAsync(msg, userData);
 
             var mute = new EntityList.Mute
             {
@@ -65,7 +51,7 @@ public static class MuteCommand
 
     public static async Task UnMuteUser(ITelegramBotClient botClient, Message msg)
     {
-        var member = await botClient.GetChatMember(msg.Chat.Id, msg.From.Id);
+        var member = await DbMethods.GetMemberAsync(botClient, msg);
         if (msg.ReplyToMessage is null) return;
         if (member.Status != ChatMemberStatus.Administrator && member.Status != ChatMemberStatus.Creator)
         {

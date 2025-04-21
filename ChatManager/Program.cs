@@ -8,7 +8,8 @@ using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
 using var cts = new CancellationTokenSource();
-var bot = new TelegramBotClient("token", cancellationToken: cts.Token);
+var bot = new TelegramBotClient("8048549299:AAG3MDOkOODjP5n4-P5VqNI7dwp0r4smkuQ", cancellationToken: cts.Token);
+// 7975559064:AAEznAlv6y4xF60E644JzJEZKeWOOPGVjVg - chat manager stoshka
 var me = await bot.GetMe();
 bot.OnMessage += OnMessage;
 bot.OnUpdate += OnCallbackQuery;
@@ -74,7 +75,7 @@ async Task OnMessage(Message msg, UpdateType type)
                 catch (Exception)
                 {
                     await bot.SendMessage(msg.Chat.Id,
-                        "Неверно или вовсе не указано значение. Пример: /ban 30 (мут на 30 минут)", ParseMode.Html);
+                        "Неверно или вовсе не указано значение. Пример: /ban 30 причина(не обязательно) (бан на 30 дней)", ParseMode.Html);
                 }
                 break;
             case "/unban":
@@ -182,6 +183,6 @@ async Task OnCallbackQuery(Update update)
 
 async Task OnError(Exception exception, HandleErrorSource handler)
 {
-    Console.WriteLine(exception);
+    Console.WriteLine(exception.Message + "\n" + exception.StackTrace);
     await Task.Delay(2000, cts.Token);
 }

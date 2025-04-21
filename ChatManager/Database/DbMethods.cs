@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Telegram.Bot;
 using Telegram.Bot.Types;
 
 namespace ChatManager.Database;
@@ -39,5 +40,61 @@ public static class DbMethods
                 await db.SaveChangesAsync();
             }
         }
+    }
+
+    public static async Task<EntityList.Chat> GetUserDataAsync(ApplicationContext db, Message msg)
+    {
+        var userData = db.Chats
+            .Include(u => u.Users)
+            .ThenInclude(u => u.Warns)
+            .Include(u => u.Users)
+            .ThenInclude(u => u.Ban)
+            .Include(u => u.Users)
+            .ThenInclude(u => u.Kick)
+            .Include(u => u.Users)
+            .ThenInclude(u => u.Mutes)
+            .Include(w => w.Words)
+            .FirstOrDefault(u => u.ChatId == msg.Chat.Id);
+        if (userData is null)
+        {
+            await InitializeUserAsync(msg);
+            userData = db.Chats
+                .Include(u => u.Users)
+                .ThenInclude(u => u.Warns)
+                .Include(u => u.Users)
+                .ThenInclude(u => u.Ban)
+                .Include(u => u.Users)
+                .ThenInclude(u => u.Kick)
+                .Include(u => u.Users)
+                .ThenInclude(u => u.Mutes)
+                .Include(w => w.Words)
+                .FirstOrDefault(u => u.ChatId == msg.Chat.Id);
+        }
+
+        return userData;
+    }
+    
+    public static async Task<EntityList.User> GetUserAsync(Message msg, EntityList.Chat chat)
+    {
+        var currentUser = chat.Users.FirstOrDefault(u => u.UserId == msg.From?.Id);
+        if (currentUser is null)
+        {
+            await InitializeUserAsync(msg);
+            currentUser = chat.Users.FirstOrDefault(u => u.UserId == msg.From?.Id);
+        }
+        
+        return currentUser;
+    }
+    
+    public static async Task<EntityList.User> GetReplyUserAsync(Message msg, EntityList.Chat chat)
+    {
+        var targetUser = chat.Users.FirstOrDefault(u => u.UserId == msg.ReplyToMessage.From.Id);
+        return targetUser;
+    }
+    
+    public static async Task<ChatMember> GetMemberAsync(ITelegramBotClient botClient, Message msg)
+    {
+        var member = await botClient.GetChatMember(msg.Chat.Id, msg.From.Id);
+        return member;
     }
 }

@@ -14,17 +14,7 @@ public static class WordsAnalyzer
         var message = msg.Text.Split(' ');
         using (ApplicationContext db = new ApplicationContext())
         {
-            var data = db.Chats
-                .Include(w => w.Words)
-                .FirstOrDefault(x => x.ChatId == msg.Chat.Id);
-            if (data is null)
-            {
-                await DbMethods.InitializeUserAsync(msg);
-                data = db.Chats
-                    .Include(w => w.Words)
-                    .FirstOrDefault(x => x.ChatId == msg.Chat.Id);
-            }
-            if (data.Words == null) data.Words = new List<EntityList.Word>();
+            var data = await DbMethods.GetUserDataAsync(db, msg);
             if (data.Words.Count <= 0) return;
             foreach (var word in message)
             {
@@ -41,7 +31,7 @@ public static class WordsAnalyzer
     }
     public static async Task AddWord(ITelegramBotClient botClient, Message msg, string word)
     {
-        var member = await botClient.GetChatMember(msg.Chat.Id, msg.From.Id);
+        var member = await DbMethods.GetMemberAsync(botClient, msg);
         if (member.Status != ChatMemberStatus.Administrator && member.Status != ChatMemberStatus.Creator)
         {
             await botClient.SendMessage(msg.Chat.Id, "<b>У вас недостаточно прав чтобы использовать эту комманду!</b>",
@@ -50,17 +40,7 @@ public static class WordsAnalyzer
         }
         using (ApplicationContext db = new ApplicationContext())
         {
-            var data = db.Chats
-                .Include(w => w.Words)
-                .FirstOrDefault(x => x.ChatId == msg.Chat.Id);
-            if (data is null)
-            {
-                await DbMethods.InitializeUserAsync(msg);
-                data = db.Chats
-                    .Include(w => w.Words)
-                    .FirstOrDefault(x => x.ChatId == msg.Chat.Id);
-            }
-            if (data.Words == null) data.Words = new List<EntityList.Word>();
+            var data = await DbMethods.GetUserDataAsync(db, msg);
 
             if (data.Words.Any(w => w.BlockWord.ToLower().Contains(word.ToLower())))
             {
@@ -79,7 +59,7 @@ public static class WordsAnalyzer
     }
     public static async Task RemoveWord(ITelegramBotClient botClient, Message msg, string word)
     {
-        var member = await botClient.GetChatMember(msg.Chat.Id, msg.From.Id);
+        var member = await DbMethods.GetMemberAsync(botClient, msg);
         if (member.Status != ChatMemberStatus.Administrator && member.Status != ChatMemberStatus.Creator)
         {
             await botClient.SendMessage(msg.Chat.Id, "<b>У вас недостаточно прав чтобы использовать эту комманду!</b>",
@@ -88,17 +68,7 @@ public static class WordsAnalyzer
         }
         using (ApplicationContext db = new ApplicationContext())
         {
-            var data = db.Chats
-                .Include(w => w.Words)
-                .FirstOrDefault(x => x.ChatId == msg.Chat.Id);
-            if (data is null)
-            {
-                await DbMethods.InitializeUserAsync(msg);
-                data = db.Chats
-                    .Include(w => w.Words)
-                    .FirstOrDefault(x => x.ChatId == msg.Chat.Id);
-            }
-            if (data.Words == null) data.Words = new List<EntityList.Word>();
+            var data = await DbMethods.GetUserDataAsync(db, msg);
             
             var currentWord = data.Words.FirstOrDefault(w => w.BlockWord.ToLower().Contains(word.ToLower()));
             if (currentWord is null)
@@ -113,7 +83,7 @@ public static class WordsAnalyzer
     }
     public static async Task ListWords(ITelegramBotClient botClient, Message msg)
     {
-        var member = await botClient.GetChatMember(msg.Chat.Id, msg.From.Id);
+        var member = await DbMethods.GetMemberAsync(botClient, msg);
         if (member.Status != ChatMemberStatus.Administrator && member.Status != ChatMemberStatus.Creator)
         {
             await botClient.SendMessage(msg.Chat.Id, "У вас недостаточно прав чтобы использовать эту комманду.",
@@ -123,17 +93,7 @@ public static class WordsAnalyzer
         var message = "Список запрещенных слов: ";
         using (ApplicationContext db = new ApplicationContext())
         {
-            var data = db.Chats
-                .Include(w => w.Words)
-                .FirstOrDefault(x => x.ChatId == msg.Chat.Id);
-            if (data is null)
-            {
-                await DbMethods.InitializeUserAsync(msg);
-                data = db.Chats
-                    .Include(w => w.Words)
-                    .FirstOrDefault(x => x.ChatId == msg.Chat.Id);
-            }
-            if (data.Words == null) data.Words = new List<EntityList.Word>();
+            var data = await DbMethods.GetUserDataAsync(db, msg);
             for (int i = 0; i < data.Words.Count; i++)
             {
                 message += $"\n<blockquote>{i}. {data.Words[i].BlockWord}</blockquote>";

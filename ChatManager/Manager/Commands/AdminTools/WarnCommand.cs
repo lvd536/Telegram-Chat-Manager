@@ -9,7 +9,7 @@ public static class WarnCommand
 {
         public static async Task WarnUser(ITelegramBotClient botClient, Message msg, string description)
     {
-        var member = await botClient.GetChatMember(msg.Chat.Id, msg.From.Id);
+        var member = await DbMethods.GetMemberAsync(botClient, msg);
         if (msg.ReplyToMessage is null) return;
         if (member.Status != ChatMemberStatus.Administrator && member.Status != ChatMemberStatus.Creator)
         {
@@ -20,22 +20,8 @@ public static class WarnCommand
 
         using (ApplicationContext db = new ApplicationContext())
         {
-            var userData = db.Chats
-                .Include(u => u.Users)
-                .ThenInclude(u => u.Warns)
-                .FirstOrDefault(u => u.ChatId == msg.Chat.Id);
-            var currentUser = userData?.Users?.FirstOrDefault(u => u.UserId == msg.ReplyToMessage.From?.Id);
-            if (currentUser is null || userData is null)
-            {
-                await DbMethods.InitializeUserAsync(msg);
-                userData = db.Chats
-                    .Include(u => u.Users)
-                    .ThenInclude(u => u.Warns)
-                    .FirstOrDefault(u => u.ChatId == msg.Chat.Id);
-                currentUser = userData?.Users?.FirstOrDefault(u => u.UserId == msg.ReplyToMessage.From?.Id);
-            }
-
-            if (currentUser.Warns == null) currentUser.Warns = new List<EntityList.Warn>();
+            var userData = await DbMethods.GetUserDataAsync(db, msg);
+            var currentUser = await DbMethods.GetReplyUserAsync(msg, userData);
 
             var warn = new EntityList.Warn
             {
@@ -63,7 +49,7 @@ public static class WarnCommand
 
     public static async Task UnWarnUser(ITelegramBotClient botClient, Message msg)
     {
-        var member = await botClient.GetChatMember(msg.Chat.Id, msg.From.Id);
+        var member = await DbMethods.GetMemberAsync(botClient, msg);
         if (msg.ReplyToMessage is null) return;
         if (member.Status != ChatMemberStatus.Administrator && member.Status != ChatMemberStatus.Creator)
         {
@@ -74,22 +60,8 @@ public static class WarnCommand
 
         using (ApplicationContext db = new ApplicationContext())
         {
-            var userData = db.Chats
-                .Include(u => u.Users)
-                .ThenInclude(u => u.Warns)
-                .FirstOrDefault(u => u.ChatId == msg.Chat.Id);
-            var currentUser = userData?.Users?.FirstOrDefault(u => u.UserId == msg.ReplyToMessage.From?.Id);
-            if (currentUser is null || userData is null)
-            {
-                await DbMethods.InitializeUserAsync(msg);
-                userData = db.Chats
-                    .Include(u => u.Users)
-                    .ThenInclude(u => u.Warns)
-                    .FirstOrDefault(u => u.ChatId == msg.Chat.Id);
-                currentUser = userData?.Users?.FirstOrDefault(u => u.UserId == msg.ReplyToMessage.From?.Id);
-            }
-
-            if (currentUser.Warns == null) currentUser.Warns = new List<EntityList.Warn>();
+            var userData = await DbMethods.GetUserDataAsync(db, msg);
+            var currentUser = await DbMethods.GetReplyUserAsync(msg, userData);
 
             currentUser?.Warns.Remove(currentUser.Warns.Last());
             await db.SaveChangesAsync();

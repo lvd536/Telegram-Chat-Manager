@@ -6,8 +6,8 @@ public class EntityList
     {
         public int Id { get; set; }
         public long ChatId { get; set; }
-        public List<User> Users { get; set; } = null!;
-        public List<Word> Words { get; set; } = null!;
+        public List<User> Users { get; set; } = new List<User>();
+        public List<Word> Words { get; set; } = new List<Word>();
     }
 
     public class User
@@ -30,8 +30,8 @@ public class EntityList
         public int ChatId { get; set; }
         public bool IsAdmin { get; set; }
         public Chat Chat { get; set; } = null!;
-        public List<Warn> Warns { get; set; } = null!;
-        public List<Mute> Mutes { get; set; } = null!;
+        public List<Warn> Warns { get; set; } = new List<Warn>();
+        public List<Mute> Mutes { get; set; } = new List<Mute>();
         public Ban Ban { get; set; } = null!;
         public Kick Kick { get; set; } = null!;
     }

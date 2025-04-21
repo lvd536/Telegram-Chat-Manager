@@ -13,9 +13,7 @@ public static class TopCommand
     {
         using (ApplicationContext db = new ApplicationContext())
         {
-            var userData = db.Chats
-                .Include(u => u.Users)
-                .FirstOrDefault(u => u.ChatId == msg.Chat.Id);
+            var userData = await DbMethods.GetUserDataAsync(db, msg);
             var users = userData.Users.ToList();
             var message = string.Empty;
             var keyboard = new InlineKeyboardMarkup()

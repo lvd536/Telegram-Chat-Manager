@@ -9,7 +9,7 @@ public static class UserInfoCommand
 {
         public static async Task UserInfo(ITelegramBotClient botClient, Message msg)
     {
-        var member = await botClient.GetChatMember(msg.Chat.Id, msg.From.Id);
+        var member = await DbMethods.GetMemberAsync(botClient, msg);
         if (msg.ReplyToMessage is null) return;
         if (member.Status != ChatMemberStatus.Administrator && member.Status != ChatMemberStatus.Creator)
         {
@@ -20,24 +20,14 @@ public static class UserInfoCommand
 
         using (ApplicationContext db = new ApplicationContext())
         {
-            var userData = db.Chats
-                .Include(u => u.Users)
-                .ThenInclude(u => u.Warns)
-                .Include(u => u.Users)
-                .ThenInclude(u => u.Mutes)
-                .Include(u => u.Users)
-                .ThenInclude(u => u.Ban)
-                .Include(u => u.Users)
-                .ThenInclude(u => u.Kick)
-                .FirstOrDefault(u => u.ChatId == msg.Chat.Id);
-            var currentUser = userData?.Users?
-                .FirstOrDefault(u => u.UserId == msg.ReplyToMessage.From?.Id);
+            var userData = await DbMethods.GetUserDataAsync(db, msg);
+            var currentUser = await DbMethods.GetReplyUserAsync(msg, userData);
             if (currentUser?.Ban is null) currentUser.Ban = new EntityList.Ban();
             if (currentUser?.Kick is null) currentUser.Kick = new EntityList.Kick();
             if (currentUser?.Mutes is null) currentUser.Mutes = new List<EntityList.Mute>();
             if (currentUser?.Warns is null) currentUser.Warns = new List<EntityList.Warn>();
-            var banDetails = currentUser?.Ban.Description ?? "Не имеет банов";
-            var kickDetails = currentUser?.Kick.Description ?? "Не имеет киков";
+            var banDetails = currentUser.Ban.Description == String.Empty ? "Не имеет банов" : currentUser.Ban.Description;
+            var kickDetails = currentUser.Kick.Description == String.Empty ? "Не имеет киков" : currentUser.Kick.Description;
             var muteDetails = string.Empty;
             try
             {

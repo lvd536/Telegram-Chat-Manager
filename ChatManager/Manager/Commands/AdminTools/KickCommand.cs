@@ -9,7 +9,7 @@ public static class KickCommand
 {
     public static async Task KickUser(ITelegramBotClient botClient, Message msg, string description)
     {
-        var member = await botClient.GetChatMember(msg.Chat.Id, msg.From.Id);
+        var member = await DbMethods.GetMemberAsync(botClient, msg);
         if (msg.ReplyToMessage is null) return;
         if (member.Status != ChatMemberStatus.Administrator && member.Status != ChatMemberStatus.Creator)
         {
@@ -20,23 +20,9 @@ public static class KickCommand
 
         using (ApplicationContext db = new ApplicationContext())
         {
-            var userData = db.Chats
-                .Include(u => u.Users)
-                .ThenInclude(u => u.Kick)
-                .FirstOrDefault(u => u.ChatId == msg.Chat.Id);
-            var currentUser = userData?.Users?.FirstOrDefault(u => u.UserId == msg.ReplyToMessage.From?.Id);
-            if (currentUser is null || userData is null)
-            {
-                await DbMethods.InitializeUserAsync(msg);
-                userData = db.Chats
-                    .Include(u => u.Users)
-                    .ThenInclude(u => u.Kick)
-                    .FirstOrDefault(u => u.ChatId == msg.Chat.Id);
-                currentUser = userData?.Users?.FirstOrDefault(u => u.UserId == msg.ReplyToMessage.From?.Id);
-            }
-
-            if (currentUser.Kick == null) currentUser.Kick = new EntityList.Kick();
-
+            var userData = await DbMethods.GetUserDataAsync(db, msg);
+            var currentUser = await DbMethods.GetReplyUserAsync(msg, userData);
+            if (currentUser?.Kick is null) currentUser.Kick = new EntityList.Kick();
             currentUser.Kick.Description = description;
             await db.SaveChangesAsync();
             await botClient.BanChatMember(msg.Chat.Id, msg.ReplyToMessage.From.Id);

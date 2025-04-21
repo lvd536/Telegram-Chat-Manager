@@ -13,10 +13,8 @@ public static class ProfileCommand
     {
         using (ApplicationContext db = new ApplicationContext())
         {
-            var userData = db.Chats
-                .Include(u => u.Users)
-                .FirstOrDefault(c => c.ChatId == msg.Chat.Id);
-            var currentUser = userData.Users.FirstOrDefault(u => u.UserId == msg.From.Id);
+            var userData = await DbMethods.GetUserDataAsync(db, msg);
+            var currentUser = await DbMethods.GetUserAsync(msg, userData);
             var message = $"<blockquote>👤 Профиль пользователя {msg.From.FirstName}\n" +
                           $"⭐️ Уровень: {currentUser.Level}\n" +
                           $"✨ Опыт: {currentUser.Points}\n" +
