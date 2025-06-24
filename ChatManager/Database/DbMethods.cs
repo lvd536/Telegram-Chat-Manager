@@ -8,12 +8,13 @@ public static class DbMethods
 {
     public static async Task InitializeUserAsync(Message message)
     {
+        if (message.From is null) return;
         using (ApplicationContext db = new ApplicationContext())
         {
             var userData = db.Chats
                 .Include(u => u.Users)
                 .FirstOrDefault(u => u.ChatId == message.Chat.Id);
-            var currentUser = userData?.Users?.FirstOrDefault(u => u.UserId == message.From?.Id);
+            var currentUser = userData?.Users.FirstOrDefault(u => u.UserId == message.From.Id);
             if (userData is not null && currentUser is not null) return;
             if (userData?.ChatId is null)
             {
@@ -88,12 +89,13 @@ public static class DbMethods
     
     public static async Task<EntityList.User> GetReplyUserAsync(Message msg, EntityList.Chat chat)
     {
-        var targetUser = chat.Users.FirstOrDefault(u => u.UserId == msg.ReplyToMessage.From.Id);
+        var targetUser = chat.Users.FirstOrDefault(u => u.UserId == msg.ReplyToMessage?.From?.Id);
         return targetUser;
     }
     
     public static async Task<ChatMember> GetMemberAsync(ITelegramBotClient botClient, Message msg)
     {
+        if (msg.From is null) return null;
         var member = await botClient.GetChatMember(msg.Chat.Id, msg.From.Id);
         return member;
     }

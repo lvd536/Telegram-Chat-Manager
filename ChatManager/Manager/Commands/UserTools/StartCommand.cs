@@ -11,7 +11,7 @@ public static class StartCommand
     public static async Task StartCmd(ITelegramBotClient botClient, Message msg)
     {
         await DbMethods.InitializeUserAsync(msg);
-        
+        if (msg.From is null) return;
         var welcomeMessage = 
             $"<b>👋 Добро пожаловать, {msg.From.FirstName}!</b>\n\n" +
             

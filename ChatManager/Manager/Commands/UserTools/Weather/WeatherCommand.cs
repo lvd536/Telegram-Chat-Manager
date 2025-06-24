@@ -1,4 +1,6 @@
-﻿namespace ChatManager.Manager.Commands.Weather;
+﻿using ChatManager.Manager.Commands.Weather;
+
+namespace ChatManager.Manager.Commands.UserTools.Weather;
 
 using Telegram.Bot;
 using Telegram.Bot.Types;
@@ -7,7 +9,6 @@ using Telegram.Bot.Types.Enums;
 public class WeatherCommand
 {
     private readonly WeatherService _weatherService;
-    private string _city;
 
     public WeatherCommand()
     {

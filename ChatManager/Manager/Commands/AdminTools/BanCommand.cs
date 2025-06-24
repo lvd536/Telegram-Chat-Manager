@@ -22,7 +22,7 @@ public static class BanCommand
         {
             var userData = await DbMethods.GetUserDataAsync(db, msg);
             var currentUser = await DbMethods.GetReplyUserAsync(msg, userData);
-            if (currentUser?.Ban is null) currentUser.Ban = new EntityList.Ban();
+            if (currentUser.Ban is null) currentUser.Ban = new EntityList.Ban();
             currentUser.Ban.Description = description;
             await db.SaveChangesAsync();
 
