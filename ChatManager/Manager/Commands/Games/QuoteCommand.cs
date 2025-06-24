@@ -6,7 +6,7 @@ namespace ChatManager.Manager.Commands.Games;
 
 public static class QuoteCommand
 {
-    private static readonly string[] quotes = new string[]
+    private static readonly string[] Quotes = new string[]
     {
         "Любовь — это когда хочется не только в душу, но и под юбку.",
         "Жизнь как член: то встает, то падает, а ты просто терпишь.",
@@ -338,7 +338,7 @@ public static class QuoteCommand
     public static async Task QuoteCommandAsync(ITelegramBotClient botClient, Message msg)
     {
         Random rnd = new Random();
-        int index = rnd.Next(quotes.Length);
-        await botClient.SendMessage(msg.Chat.Id, $"Твоя цитата: «{quotes[index]}»", ParseMode.Html);
+        int index = rnd.Next(Quotes.Length);
+        await botClient.SendMessage(msg.Chat.Id, $"Твоя цитата: «{Quotes[index]}»", ParseMode.Html);
     }
 }

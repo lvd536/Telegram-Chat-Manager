@@ -18,7 +18,6 @@ internal class Program
     {
         _cts = new CancellationTokenSource();
         _bot = new TelegramBotClient("7558769675:AAFC_k3EIeaL2FxdpEHQN9mvPhqVQarolEM", cancellationToken: _cts.Token);
-         // 7975559064:AAEznAlv6y4xF60E644JzJEZKeWOOPGVjVg - chat manager stoshka
         var me = await _bot.GetMe();
         _bot.OnMessage += OnMessage;
         _bot.OnUpdate += OnCallbackQuery;
@@ -45,8 +44,8 @@ internal class Program
                     await StartCommand.StartCmd(_bot, msg);
                     break;
                 case "/id":
-                    if (msg.From is not null) await _bot.SendMessage(msg.Chat.Id, $"ID пользователя {msg.From.FirstName}: {msg.From.Id}",
-                        ParseMode.Html);
+                    if (msg.From is not null) 
+                        await _bot.SendMessage(msg.Chat.Id, $"ID пользователя {msg.From.FirstName}: {msg.From.Id}", ParseMode.Html);
                     break;
                 case "/profile":
                     await ProfileCommand.ProfileCmd(_bot, msg);
@@ -55,8 +54,7 @@ internal class Program
                     await TopCommand.TopCmd(_bot, msg, 1);
                     break;
                 case "/mute":
-                    try
-                    {
+                    try {
                         if (argument is not null)
                         {
                             if (defArgument is null)
@@ -66,11 +64,8 @@ internal class Program
                             else await MuteCommand.MuteUser(_bot, msg, int.Parse(argument), defArgument);
                         }
                     }
-                    catch (Exception)
-                    {
-                        await _bot.SendMessage(msg.Chat.Id,
-                            "Неверно или вовсе не указано значение. Пример: /mute 30 (мут на 30 минут)",
-                            ParseMode.Html);
+                    catch (Exception) {
+                        await _bot.SendMessage(msg.Chat.Id, "Неверно или вовсе не указано значение. Пример: /mute 30 (мут на 30 минут)", ParseMode.Html);
                     }
 
                     break;
@@ -78,8 +73,7 @@ internal class Program
                     await MuteCommand.UnMuteUser(_bot, msg);
                     break;
                 case "/ban":
-                    try
-                    {
+                    try {
                         if (argument is not null)
                         {
                             if (defArgument is null)
@@ -89,11 +83,8 @@ internal class Program
                             else await BanCommand.BanUser(_bot, msg, int.Parse(argument), defArgument);
                         }
                     }
-                    catch (Exception)
-                    {
-                        await _bot.SendMessage(msg.Chat.Id,
-                            "Неверно или вовсе не указано значение. Пример: /ban 30 причина(не обязательно) (бан на 30 дней)",
-                            ParseMode.Html);
+                    catch (Exception) {
+                        await _bot.SendMessage(msg.Chat.Id, "Неверно или вовсе не указано значение. Пример: /ban 30 причина(не обязательно) (бан на 30 дней)", ParseMode.Html);
                     }
 
                     break;
@@ -114,7 +105,6 @@ internal class Program
                         await WarnCommand.WarnUser(_bot, msg, "Не указана");
                     }
                     else await WarnCommand.WarnUser(_bot, msg, argument);
-
                     break;
                 case "/unwarn":
                     await WarnCommand.UnWarnUser(_bot, msg);
@@ -131,7 +121,6 @@ internal class Program
                         await _bot.SendMessage(msg.Chat.Id, "Слово не указано.", ParseMode.Html);
                     }
                     else await WordsAnalyzer.AddWord(_bot, msg, argument);
-
                     break;
                 case "/blocklist":
                     await WordsAnalyzer.ListWords(_bot, msg);
@@ -142,7 +131,6 @@ internal class Program
                         await _bot.SendMessage(msg.Chat.Id, "Слово не указано.", ParseMode.Html);
                     }
                     else await WordsAnalyzer.RemoveWord(_bot, msg, argument);
-
                     break;
                 case "/devblog":
                     await DevblogCommand.DevblogCommandAsync(_bot, msg);
@@ -158,7 +146,6 @@ internal class Program
                     {
                         await SetLevelCommand.SetLevelAsync(_bot, msg, editLevelValue);
                     }
-
                     break;
                 case "/checkLevel":
                     await CheckLevelCommand.CheckUserLevel(_bot, msg);
