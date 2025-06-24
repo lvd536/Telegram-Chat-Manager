@@ -4,6 +4,7 @@ using ChatManager.Manager.Commands.AdminTools;
 using ChatManager.Manager.Commands.AdminTools.CreatorCommands;
 using ChatManager.Manager.Commands.Games;
 using ChatManager.Manager.Commands.UserTools.Weather;
+using ChatManager.Services;
 using Telegram.Bot;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
@@ -18,9 +19,11 @@ internal class Program
     {
         _cts = new CancellationTokenSource();
         _bot = new TelegramBotClient("7558769675:AAFC_k3EIeaL2FxdpEHQN9mvPhqVQarolEM", cancellationToken: _cts.Token);
+        var onMessageService = new OnMessageService(_bot);
+        var onCallbackQuery = new OnCallbackQueryService(_bot);
         var me = await _bot.GetMe();
-        _bot.OnMessage += OnMessage;
-        _bot.OnUpdate += OnCallbackQuery;
+        _bot.OnMessage += onMessageService.OnMessage;
+        _bot.OnUpdate += onCallbackQuery.OnCallbackQuery;
         _bot.OnError += OnError;
         Console.WriteLine($"@{me.Username} is running... Press Enter to terminate");
         Console.ReadLine();
@@ -155,54 +158,6 @@ internal class Program
                     await weather.WeatherCmd(_bot, msg);
                     break;
             }
-        }
-    }
-
-    private static async Task OnCallbackQuery(Update update)
-    {
-        if (update.Type != UpdateType.CallbackQuery || update.CallbackQuery?.Message == null) return;
-        await _bot.AnswerCallbackQuery(update.CallbackQuery.Id);
-        switch (update.CallbackQuery?.Data)
-        {
-            case "IdCall":
-                await _bot.SendMessage(update.CallbackQuery.Message.Chat.Id, $"ID пользователя {update.CallbackQuery.From.FirstName}: {update.CallbackQuery.From.Id}", ParseMode.Html);
-                break;
-            case "TopByLevel":
-                await TopCommand.TopCmd(_bot, update.CallbackQuery.Message ?? new Message(), 1);
-                break;
-            case "TopByMessages":
-                await TopCommand.TopCmd(_bot, update.CallbackQuery.Message ?? new Message(), 2);
-                break;
-            case "TopByTextMessages":
-                await TopCommand.TopCmd(_bot, update.CallbackQuery.Message ?? new Message(), 3);
-                break;
-            case "TopByAudioMessages":
-                await TopCommand.TopCmd(_bot, update.CallbackQuery.Message ?? new Message(), 4);
-                break;
-            case "TopByVideoMessages":
-                await TopCommand.TopCmd(_bot, update.CallbackQuery.Message ?? new Message(), 5);
-                break;
-            case "TopBySticker":
-                await TopCommand.TopCmd(_bot, update.CallbackQuery.Message ?? new Message(), 6);
-                break;
-            case "TopByPhoto":
-                await TopCommand.TopCmd(_bot, update.CallbackQuery.Message ?? new Message(), 7);
-                break;
-            case "TopByLocation":
-                await TopCommand.TopCmd(_bot, update.CallbackQuery.Message ?? new Message(), 8);
-                break;
-            case "TopByOther":
-                await TopCommand.TopCmd(_bot, update.CallbackQuery.Message ?? new Message(), 9);
-                break;
-            case "TopByVoice":
-                await TopCommand.TopCmd(_bot, update.CallbackQuery.Message ?? new Message(), 10);
-                break;
-            case "TopByCircle":
-                await TopCommand.TopCmd(_bot, update.CallbackQuery.Message ?? new Message(), 11);
-                break;
-            case "TopByGif":
-                await TopCommand.TopCmd(_bot, update.CallbackQuery.Message ?? new Message(), 12);
-                break;
         }
     }
 
