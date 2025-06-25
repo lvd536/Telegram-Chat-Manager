@@ -35,6 +35,7 @@ public class OnMessageService
         {
             try
             {
+                await _bot.SendChatAction(msg.Chat.Id, ChatAction.Typing);
                 switch (command)
                 {
                     case "/start":

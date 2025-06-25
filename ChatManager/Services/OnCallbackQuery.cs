@@ -15,6 +15,7 @@ public class OnCallbackQueryService
     public async Task OnCallbackQuery(Update update)
     {
         if (update.Type != UpdateType.CallbackQuery || update.CallbackQuery?.Message == null) return;
+        await _bot.SendChatAction(update.CallbackQuery.Message.Chat.Id, ChatAction.Typing);
         await _bot.AnswerCallbackQuery(update.CallbackQuery.Id);
         switch (update.CallbackQuery?.Data)
         {

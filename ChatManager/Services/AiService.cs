@@ -7,6 +7,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Telegram.Bot;
 using Telegram.Bot.Types;
+using Telegram.Bot.Types.Enums;
 using UglyToad.PdfPig;
 
 namespace ChatManager.Services;
@@ -29,7 +30,7 @@ public class AiService
         if (string.IsNullOrEmpty(userQuestion)) return;
 
         var message = await _bot.SendMessage(msg.Chat.Id, "Model is reasoning...");
-        
+        await _bot.SendChatAction(msg.Chat.Id, ChatAction.Typing);
         var payload = new
         {
             model = "deepseek/deepseek-r1-0528:free",
@@ -55,7 +56,7 @@ public class AiService
     {
         if (msg.Photo == null) return;
         var statusMessage = await _bot.SendMessage(msg.Chat.Id, "🖼️ Processing image...");
-        
+        await _bot.SendChatAction(msg.Chat.Id, ChatAction.Typing);
         var photo = msg.Photo.OrderByDescending(p => p.FileSize).First();
         var file = await _bot.GetFile(photo.FileId);
         if (file.FilePath == null) return;
