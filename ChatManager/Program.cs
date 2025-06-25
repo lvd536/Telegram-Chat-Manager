@@ -10,7 +10,7 @@ internal class Program
     private static async Task Main()
     {
         _cts = new CancellationTokenSource();
-        _bot = new TelegramBotClient("7558769675:AAFC_k3EIeaL2FxdpEHQN9mvPhqVQarolEM", cancellationToken: _cts.Token);
+        _bot = new TelegramBotClient("", cancellationToken: _cts.Token);
         var onMessageService = new OnMessageService(_bot);
         var onCallbackQuery = new OnCallbackQueryService(_bot);
         var onErrorService = new OnErrorService(_cts, _bot);
