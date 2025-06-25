@@ -20,7 +20,6 @@ internal class Program
             .Build();
         
         var botToken = configuration.GetSection("BotConfiguration:launchType").Value == "1" ? configuration.GetSection("BotConfiguration:prodToken").Value : configuration.GetSection("BotConfiguration:devToken").Value;
-        Console.WriteLine($"Token: {botToken}");
         if (string.IsNullOrEmpty(botToken))
         {
             throw new ArgumentNullException("Bot token is not configured in appsettings.json");

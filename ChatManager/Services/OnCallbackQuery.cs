@@ -22,41 +22,46 @@ public class OnCallbackQueryService
                 await _bot.SendMessage(update.CallbackQuery.Message.Chat.Id, $"ID пользователя {update.CallbackQuery.From.FirstName}: {update.CallbackQuery.From.Id}", ParseMode.Html);
                 break;
             case "TopByLevel":
-                await TopCommand.TopCmd(_bot, update.CallbackQuery.Message ?? new Message(), 1);
+                await CreateTopHandler(1, update);
                 break;
             case "TopByMessages":
-                await TopCommand.TopCmd(_bot, update.CallbackQuery.Message ?? new Message(), 2);
+                await CreateTopHandler(2, update);
                 break;
             case "TopByTextMessages":
-                await TopCommand.TopCmd(_bot, update.CallbackQuery.Message ?? new Message(), 3);
+                await CreateTopHandler(3, update);
                 break;
             case "TopByAudioMessages":
-                await TopCommand.TopCmd(_bot, update.CallbackQuery.Message ?? new Message(), 4);
+                await CreateTopHandler(4, update);
                 break;
             case "TopByVideoMessages":
-                await TopCommand.TopCmd(_bot, update.CallbackQuery.Message ?? new Message(), 5);
+                await CreateTopHandler(5, update);
                 break;
             case "TopBySticker":
-                await TopCommand.TopCmd(_bot, update.CallbackQuery.Message ?? new Message(), 6);
+                await CreateTopHandler(6, update);
                 break;
             case "TopByPhoto":
-                await TopCommand.TopCmd(_bot, update.CallbackQuery.Message ?? new Message(), 7);
+                await CreateTopHandler(7, update);
                 break;
             case "TopByLocation":
-                await TopCommand.TopCmd(_bot, update.CallbackQuery.Message ?? new Message(), 8);
+                await CreateTopHandler(8, update);
                 break;
             case "TopByOther":
-                await TopCommand.TopCmd(_bot, update.CallbackQuery.Message ?? new Message(), 9);
+                await CreateTopHandler(9, update);
                 break;
             case "TopByVoice":
-                await TopCommand.TopCmd(_bot, update.CallbackQuery.Message ?? new Message(), 10);
+                await CreateTopHandler(10, update);
                 break;
             case "TopByCircle":
-                await TopCommand.TopCmd(_bot, update.CallbackQuery.Message ?? new Message(), 11);
+                await CreateTopHandler(11, update);
                 break;
             case "TopByGif":
-                await TopCommand.TopCmd(_bot, update.CallbackQuery.Message ?? new Message(), 12);
+                await CreateTopHandler(12, update);
                 break;
         }
+    }
+
+    private async Task CreateTopHandler(short id, Update update)
+    {
+        await TopCommand.TopCmd(_bot, update.CallbackQuery?.Message ?? new Message(), id);
     }
 }
