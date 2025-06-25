@@ -13,7 +13,7 @@ internal class Program
         _bot = new TelegramBotClient("7558769675:AAFC_k3EIeaL2FxdpEHQN9mvPhqVQarolEM", cancellationToken: _cts.Token);
         var onMessageService = new OnMessageService(_bot);
         var onCallbackQuery = new OnCallbackQueryService(_bot);
-        var onErrorService = new OnErrorService(_cts);
+        var onErrorService = new OnErrorService(_cts, _bot);
         var me = await _bot.GetMe();
         _bot.OnMessage += onMessageService.OnMessage;
         _bot.OnUpdate += onCallbackQuery.OnCallbackQuery;

@@ -29,23 +29,25 @@ public class OnMessageService
         var defArgument = commandParts.Length >= 3 ? commandParts[2] : null;
         if (msg.Text.StartsWith('/'))
         {
-            switch (command)
+            try
             {
-                case "/start":
-                    await StartCommand.StartCmd(_bot, msg);
-                    break;
-                case "/id":
-                    if (msg.From is not null) 
-                        await _bot.SendMessage(msg.Chat.Id, $"ID пользователя {msg.From.FirstName}: {msg.From.Id}", ParseMode.Html);
-                    break;
-                case "/profile":
-                    await ProfileCommand.ProfileCmd(_bot, msg);
-                    break;
-                case "/top":
-                    await TopCommand.TopCmd(_bot, msg, 1);
-                    break;
-                case "/mute":
-                    try {
+                switch (command)
+                {
+                    case "/start":
+                        await StartCommand.StartCmd(_bot, msg);
+                        break;
+                    case "/id":
+                        if (msg.From is not null)
+                            await _bot.SendMessage(msg.Chat.Id, $"ID пользователя {msg.From.FirstName}: {msg.From.Id}",
+                                ParseMode.Html);
+                        break;
+                    case "/profile":
+                        await ProfileCommand.ProfileCmd(_bot, msg);
+                        break;
+                    case "/top":
+                        await TopCommand.TopCmd(_bot, msg, 1);
+                        break;
+                    case "/mute":
                         if (argument is not null)
                         {
                             if (defArgument is null)
@@ -54,17 +56,12 @@ public class OnMessageService
                             }
                             else await MuteCommand.MuteUser(_bot, msg, int.Parse(argument), defArgument);
                         }
-                    }
-                    catch (Exception) {
-                        await _bot.SendMessage(msg.Chat.Id, "Неверно или вовсе не указано значение. Пример: /mute 30 (мут на 30 минут)", ParseMode.Html);
-                    }
 
-                    break;
-                case "/unmute":
-                    await MuteCommand.UnMuteUser(_bot, msg);
-                    break;
-                case "/ban":
-                    try {
+                        break;
+                    case "/unmute":
+                        await MuteCommand.UnMuteUser(_bot, msg);
+                        break;
+                    case "/ban":
                         if (argument is not null)
                         {
                             if (defArgument is null)
@@ -73,78 +70,83 @@ public class OnMessageService
                             }
                             else await BanCommand.BanUser(_bot, msg, int.Parse(argument), defArgument);
                         }
-                    }
-                    catch (Exception) {
-                        await _bot.SendMessage(msg.Chat.Id, "Неверно или вовсе не указано значение. Пример: /ban 30 причина(не обязательно) (бан на 30 дней)", ParseMode.Html);
-                    }
 
-                    break;
-                case "/unban":
-                    await BanCommand.UnBanUser(_bot, msg);
-                    break;
-                case "/kick":
-                    if (argument is null)
-                    {
-                        await KickCommand.KickUser(_bot, msg, "Не указана");
-                    }
-                    else await KickCommand.KickUser(_bot, msg, argument);
+                        break;
+                    case "/unban":
+                        await BanCommand.UnBanUser(_bot, msg);
+                        break;
+                    case "/kick":
+                        if (argument is null)
+                        {
+                            await KickCommand.KickUser(_bot, msg, "Не указана");
+                        }
+                        else await KickCommand.KickUser(_bot, msg, argument);
 
-                    break;
-                case "/warn":
-                    if (argument is null)
-                    {
-                        await WarnCommand.WarnUser(_bot, msg, "Не указана");
-                    }
-                    else await WarnCommand.WarnUser(_bot, msg, argument);
-                    break;
-                case "/unwarn":
-                    await WarnCommand.UnWarnUser(_bot, msg);
-                    break;
-                case "/info":
-                    await UserInfoCommand.UserInfo(_bot, msg);
-                    break;
-                case "/help":
-                    await HelpCommand.HelpCmd(_bot, msg);
-                    break;
-                case "/add":
-                    if (argument is null)
-                    {
-                        await _bot.SendMessage(msg.Chat.Id, "Слово не указано.", ParseMode.Html);
-                    }
-                    else await WordsAnalyzer.AddWord(_bot, msg, argument);
-                    break;
-                case "/blocklist":
-                    await WordsAnalyzer.ListWords(_bot, msg);
-                    break;
-                case "/remove":
-                    if (argument is null)
-                    {
-                        await _bot.SendMessage(msg.Chat.Id, "Слово не указано.", ParseMode.Html);
-                    }
-                    else await WordsAnalyzer.RemoveWord(_bot, msg, argument);
-                    break;
-                case "/devblog":
-                    await DevblogCommand.DevblogCommandAsync(_bot, msg);
-                    break;
-                case "/chance":
-                    await ChanceCommand.ChanceCommandAsync(_bot, msg);
-                    break;
-                case "/quote":
-                    await QuoteCommand.QuoteCommandAsync(_bot, msg);
-                    break;
-                case "/editLevel":
-                    if (int.TryParse(argument, out int editLevelValue))
-                    {
-                        await SetLevelCommand.SetLevelAsync(_bot, msg, editLevelValue);
-                    }
-                    break;
-                case "/checkLevel":
-                    await CheckLevelCommand.CheckUserLevel(_bot, msg);
-                    break;
-                case "/weather":
-                    var weather = new WeatherCommand();
-                    await weather.WeatherCmd(_bot, msg);
-                    break;
+                        break;
+                    case "/warn":
+                        if (argument is null)
+                        {
+                            await WarnCommand.WarnUser(_bot, msg, "Не указана");
+                        }
+                        else await WarnCommand.WarnUser(_bot, msg, argument);
+
+                        break;
+                    case "/unwarn":
+                        await WarnCommand.UnWarnUser(_bot, msg);
+                        break;
+                    case "/info":
+                        await UserInfoCommand.UserInfo(_bot, msg);
+                        break;
+                    case "/help":
+                        await HelpCommand.HelpCmd(_bot, msg);
+                        break;
+                    case "/add":
+                        if (argument is null)
+                        {
+                            await _bot.SendMessage(msg.Chat.Id, "Слово не указано.", ParseMode.Html);
+                        }
+                        else await WordsAnalyzer.AddWord(_bot, msg, argument);
+
+                        break;
+                    case "/blocklist":
+                        await WordsAnalyzer.ListWords(_bot, msg);
+                        break;
+                    case "/remove":
+                        if (argument is null)
+                        {
+                            await _bot.SendMessage(msg.Chat.Id, "Слово не указано.", ParseMode.Html);
+                        }
+                        else await WordsAnalyzer.RemoveWord(_bot, msg, argument);
+
+                        break;
+                    case "/devblog":
+                        await DevblogCommand.DevblogCommandAsync(_bot, msg);
+                        break;
+                    case "/chance":
+                        await ChanceCommand.ChanceCommandAsync(_bot, msg);
+                        break;
+                    case "/quote":
+                        await QuoteCommand.QuoteCommandAsync(_bot, msg);
+                        break;
+                    case "/editLevel":
+                        if (int.TryParse(argument, out int editLevelValue))
+                        {
+                            await SetLevelCommand.SetLevelAsync(_bot, msg, editLevelValue);
+                        }
+
+                        break;
+                    case "/checkLevel":
+                        await CheckLevelCommand.CheckUserLevel(_bot, msg);
+                        break;
+                    case "/weather":
+                        var weather = new WeatherCommand();
+                        await weather.WeatherCmd(_bot, msg);
+                        break;
+                }
+            }
+            catch (FormatException e)
+            {
+                await _bot.SendMessage(msg.Chat.Id, "Неверно указана комманда или ее агрументы! Прочитайте /help и повторите снова");
             }
         }
     }
