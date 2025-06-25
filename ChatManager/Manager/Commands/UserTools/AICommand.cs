@@ -8,6 +8,13 @@ public static class AICommand
 {
     public static async Task AiCmd(ITelegramBotClient botClient, Message msg, AiService service)
     {
-        await service.MakeAiRequest(botClient, msg);
+        if (msg.Text != null)
+        {
+            await service.MakeTextRequest(msg);
+        }
+        else if (msg.Photo != null)
+        {
+            await service.ProcessImageMessage(msg);
+        }
     }
 }

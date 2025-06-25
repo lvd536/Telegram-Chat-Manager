@@ -25,6 +25,7 @@ public class OnMessageService
     {
         await MessageCounter.MessageCounterAsync(_bot, msg, msg.Type);
         await WordsAnalyzer.MessageAnalyzer(_bot, msg);
+        if (msg.Caption is not null && msg.Caption.StartsWith("/ai") && msg.Type == MessageType.Photo) await AICommand.AiCmd(_bot, msg, _aiService);
         if (msg.Text is null) return;
         var commandParts = msg.Text.Split(' ');
         var command = commandParts[0];
@@ -133,7 +134,6 @@ public class OnMessageService
                         {
                             await SetLevelCommand.SetLevelAsync(_bot, msg, editLevelValue);
                         }
-
                         break;
                     case "/checkLevel":
                         await CheckLevelCommand.CheckUserLevel(_bot, msg);

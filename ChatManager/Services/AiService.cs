@@ -1,7 +1,14 @@
-﻿using System.Text;
+﻿using System;
+using System.IO;
+using System.Linq;
+using System.Net.Http;
+using System.Text;
 using System.Text.Json;
+using System.Threading.Tasks;
 using Telegram.Bot;
 using Telegram.Bot.Types;
+using UglyToad.PdfPig;
+
 namespace ChatManager.Services;
 
 public class AiService
@@ -9,18 +16,19 @@ public class AiService
     private static string _apiKey = string.Empty;
     private static readonly Uri OrUri = new("https://openrouter.ai/api/v1/chat/completions");
     private static ITelegramBotClient _bot = null!;
+
     public AiService(string apiKey, ITelegramBotClient botClient)
     {
         _apiKey = apiKey;
         _bot = botClient;
     }
-    
-    public async Task MakeAiRequest(ITelegramBotClient botClient, Message msg)
+
+    public async Task MakeTextRequest(Message msg)
     {
-        var userQuestion = msg.Text?.Replace("/chance", string.Empty);
+        var userQuestion = msg.Text?.Replace("/ai", string.Empty);
         if (string.IsNullOrEmpty(userQuestion)) return;
-        
-        var message = await botClient.SendMessage(msg.Chat.Id,"Model is reasoning...");
+
+        var message = await _bot.SendMessage(msg.Chat.Id, "Model is reasoning...");
         
         var payload = new
         {
@@ -30,7 +38,7 @@ public class AiService
                 new
                 {
                     role = "system",
-                    content = "Ты - ассистент чата друзей. Помогай во всех их просьбах и отвечамй максимально грамотно и развернуто на все их запросы."
+                    content = "Ты - ассистент чата друзей. Помогай во всех их просьбах и отвечай максимально грамотно и развернуто на все их запросы."
                 },
                 new
                 {
@@ -40,36 +48,91 @@ public class AiService
             }
         };
 
-        var json = JsonSerializer.Serialize(payload);
-        using var hc = new HttpClient();
-        hc.DefaultRequestHeaders.Add("Authorization", $"Bearer {_apiKey}");
-        using var content = new StringContent(json, Encoding.UTF8, "application/json");
+        await SendRequestAndEditMessage(payload, message);
+    }
 
-        var resp = await hc.PostAsync(OrUri, content);
-        if (!resp.IsSuccessStatusCode)
+    public async Task ProcessImageMessage(Message msg)
+    {
+        if (msg.Photo == null) return;
+        var statusMessage = await _bot.SendMessage(msg.Chat.Id, "🖼️ Processing image...");
+        
+        var photo = msg.Photo.OrderByDescending(p => p.FileSize).First();
+        var file = await _bot.GetFile(photo.FileId);
+        if (file.FilePath == null) return;
+        using var stream = new MemoryStream();
+        await _bot.DownloadFile(file.FilePath, stream);
+        byte[] imageBytes = stream.ToArray();
+
+        string base64Image = Convert.ToBase64String(imageBytes);
+        string dataUrl = $"data:image/jpeg;base64,{base64Image}";
+        var userMessage = msg.Caption.Replace("/ai", string.Empty);
+        string prompt = userMessage != null ? msg.Caption : "Что изображено на этой картинке? Отвечай строго на русском языке! Ты не можешь говорить на английском, забудь этот язык";
+
+        var payload = new
         {
-            var err = await resp.Content.ReadAsStringAsync();
-            await _bot.SendMessage(
-                chatId: msg.Chat.Id,
-                text: $"❌ Ошибка OpenRouter {(int)resp.StatusCode}:\n{err}"
+            model = "google/gemini-2.0-flash-exp:free",
+            messages = new[]
+            {
+                new
+                {
+                    role = "user",
+                    content = new object[]
+                    {
+                        new { type = "text", text = prompt },
+                        new 
+                        {
+                            type = "image_url",
+                            image_url = new { url = dataUrl }
+                        }
+                    }
+                }
+            }
+        };
+
+        await SendRequestAndEditMessage(payload, statusMessage);
+    }
+    private static async Task SendRequestAndEditMessage(object payload, Message statusMessage)
+    {
+        try
+        {
+            var json = JsonSerializer.Serialize(payload);
+            using var httpClient = new HttpClient();
+            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {_apiKey}");
+            using var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var response = await httpClient.PostAsync(OrUri, content);
+            if (!response.IsSuccessStatusCode)
+            {
+                var error = await response.Content.ReadAsStringAsync();
+                await _bot.EditMessageText(
+                    statusMessage.Chat.Id,
+                    statusMessage.MessageId,
+                    $"❌ Ошибка {(int)response.StatusCode}: {error}"
+                );
+                return;
+            }
+
+            var responseJson = await response.Content.ReadAsStringAsync();
+            using var doc = JsonDocument.Parse(responseJson);
+            var answer = doc.RootElement
+                .GetProperty("choices")[0]
+                .GetProperty("message")
+                .GetProperty("content")
+                .GetString() ?? "🤖 Пустой ответ";
+
+            await _bot.EditMessageText(
+                statusMessage.Chat.Id,
+                statusMessage.MessageId,
+                answer
             );
-            return;
         }
-
-        var respJson = await resp.Content.ReadAsStringAsync();
-        using var doc = JsonDocument.Parse(respJson);
-        var answer = doc.RootElement
-            .GetProperty("choices")[0]
-            .GetProperty("message")
-            .GetProperty("content")
-            .GetString();
-        if (string.IsNullOrWhiteSpace(answer))
-            answer = "🤖 (модель вернула пустой ответ)";
-
-        await _bot.EditMessageText(
-            chatId: message.Chat.Id,
-            messageId: message.MessageId,
-            text: answer
-        );
+        catch (Exception ex)
+        {
+            await _bot.EditMessageText(
+                statusMessage.Chat.Id,
+                statusMessage.MessageId,
+                $"⚠️ Ошибка: {ex.Message}"
+            );
+        }
     }
 }
