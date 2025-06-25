@@ -5,7 +5,7 @@ using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
 
-namespace ChatManager.Manager.Commands;
+namespace ChatManager.Manager.Commands.UserTools;
 
 public static class TopCommand
 {
@@ -43,13 +43,6 @@ public static class TopCommand
                     {
                         message += $"\n<blockquote>{u.UserName} - {u.Level} уровень</blockquote>";
                     }
-                    try {
-                        await botClient.EditMessageText(msg.Chat.Id, msg.Id, message, ParseMode.Html,
-                            replyMarkup: keyboard);
-                    }
-                    catch (Exception) {
-                        await botClient.SendMessage(msg.Chat.Id, message, ParseMode.Html, replyMarkup: keyboard);
-                    }
                     break;
                 case 2:
                     users.Sort((a, b) => (int)(b.Messages - a.Messages));
@@ -57,13 +50,6 @@ public static class TopCommand
                     foreach (var u in users)
                     {
                         message += $"\n<blockquote>{u.UserName} - {u.Messages} сообщений</blockquote>";
-                    }
-                    try {
-                        await botClient.EditMessageText(msg.Chat.Id, msg.Id, message, ParseMode.Html,
-                            replyMarkup: keyboard);
-                    }
-                    catch (Exception) {
-                        await botClient.SendMessage(msg.Chat.Id, message, ParseMode.Html, replyMarkup: keyboard);
                     }
                     break;
                 case 3:
@@ -73,13 +59,6 @@ public static class TopCommand
                     {
                         message += $"\n<blockquote>{u.UserName} - {u.TextMessages} текстовых сообщений</blockquote>";
                     }
-                    try {
-                        await botClient.EditMessageText(msg.Chat.Id, msg.Id, message, ParseMode.Html,
-                            replyMarkup: keyboard);
-                    }
-                    catch (Exception) {
-                        await botClient.SendMessage(msg.Chat.Id, message, ParseMode.Html, replyMarkup: keyboard);
-                    }
                     break;
                 case 4:
                     users.Sort((a, b) => (int)(b.AudioMessages - a.AudioMessages));
@@ -87,13 +66,6 @@ public static class TopCommand
                     foreach (var u in users)
                     {
                         message += $"\n<blockquote>{u.UserName} - {u.AudioMessages} аудио</blockquote>";
-                    }
-                    try {
-                        await botClient.EditMessageText(msg.Chat.Id, msg.Id, message, ParseMode.Html,
-                            replyMarkup: keyboard);
-                    }
-                    catch (Exception) {
-                        await botClient.SendMessage(msg.Chat.Id, message, ParseMode.Html, replyMarkup: keyboard);
                     }
                     break;
                 case 5:
@@ -103,13 +75,6 @@ public static class TopCommand
                     {
                         message += $"\n<blockquote>{u.UserName} - {u.VideoMessages} видео</blockquote>";
                     }
-                    try {
-                        await botClient.EditMessageText(msg.Chat.Id, msg.Id, message, ParseMode.Html,
-                            replyMarkup: keyboard);
-                    }
-                    catch (Exception) {
-                        await botClient.SendMessage(msg.Chat.Id, message, ParseMode.Html, replyMarkup: keyboard);
-                    }
                     break;
                 case 6:
                     users.Sort((a, b) => (int)(b.StickerMessages - a.StickerMessages));
@@ -117,13 +82,6 @@ public static class TopCommand
                     foreach (var u in users)
                     {
                         message += $"\n<blockquote>{u.UserName} - {u.StickerMessages} стикеров</blockquote>";
-                    }
-                    try {
-                        await botClient.EditMessageText(msg.Chat.Id, msg.Id, message, ParseMode.Html,
-                            replyMarkup: keyboard);
-                    }
-                    catch (Exception) {
-                        await botClient.SendMessage(msg.Chat.Id, message, ParseMode.Html, replyMarkup: keyboard);
                     }
                     break;
                 case 7:
@@ -133,13 +91,6 @@ public static class TopCommand
                     {
                         message += $"\n<blockquote>{u.UserName} - {u.PhotoMessages} фото</blockquote>";
                     }
-                    try {
-                        await botClient.EditMessageText(msg.Chat.Id, msg.Id, message, ParseMode.Html,
-                            replyMarkup: keyboard);
-                    }
-                    catch (Exception) {
-                        await botClient.SendMessage(msg.Chat.Id, message, ParseMode.Html, replyMarkup: keyboard);
-                    }
                     break;
                 case 8:
                     users.Sort((a, b) => (int)(b.LocationMessages - a.LocationMessages));
@@ -147,13 +98,6 @@ public static class TopCommand
                     foreach (var u in users)
                     {
                         message += $"\n<blockquote>{u.UserName} - {u.LocationMessages} гео</blockquote>";
-                    }
-                    try {
-                        await botClient.EditMessageText(msg.Chat.Id, msg.Id, message, ParseMode.Html,
-                            replyMarkup: keyboard);
-                    }
-                    catch (Exception) {
-                        await botClient.SendMessage(msg.Chat.Id, message, ParseMode.Html, replyMarkup: keyboard);
                     }
                     break;
                 case 9:
@@ -163,13 +107,6 @@ public static class TopCommand
                     {
                         message += $"\n<blockquote>{u.UserName} - {u.OtherMessages} других сообщений</blockquote>";
                     }
-                    try {
-                        await botClient.EditMessageText(msg.Chat.Id, msg.Id, message, ParseMode.Html,
-                            replyMarkup: keyboard);
-                    }
-                    catch (Exception) {
-                        await botClient.SendMessage(msg.Chat.Id, message, ParseMode.Html, replyMarkup: keyboard);
-                    }
                     break;
                 case 10:
                     users.Sort((a, b) => (int)(b.VoiceMessages - a.VoiceMessages));
@@ -177,13 +114,6 @@ public static class TopCommand
                     foreach (var u in users)
                     {
                         message += $"\n<blockquote>{u.UserName} - {u.VoiceMessages} голосовых</blockquote>";
-                    }
-                    try {
-                        await botClient.EditMessageText(msg.Chat.Id, msg.Id, message, ParseMode.Html,
-                            replyMarkup: keyboard);
-                    }
-                    catch (Exception) {
-                        await botClient.SendMessage(msg.Chat.Id, message, ParseMode.Html, replyMarkup: keyboard);
                     }
                     break;
                 case 11:
@@ -193,13 +123,6 @@ public static class TopCommand
                     {
                         message += $"\n<blockquote>{u.UserName} - {u.VideoNotesMessages} кружков</blockquote>";
                     }
-                    try {
-                        await botClient.EditMessageText(msg.Chat.Id, msg.Id, message, ParseMode.Html,
-                            replyMarkup: keyboard);
-                    }
-                    catch (Exception) {
-                        await botClient.SendMessage(msg.Chat.Id, message, ParseMode.Html, replyMarkup: keyboard);
-                    }
                     break;
                 case 12:
                     users.Sort((a, b) => (int)(b.AnimationMessages - a.AnimationMessages));
@@ -208,14 +131,14 @@ public static class TopCommand
                     {
                         message += $"\n<blockquote>{u.UserName} - {u.AnimationMessages} гифок</blockquote>";
                     }
-                    try {
-                        await botClient.EditMessageText(msg.Chat.Id, msg.Id, message, ParseMode.Html,
-                            replyMarkup: keyboard);
-                    }
-                    catch (Exception) {
-                        await botClient.SendMessage(msg.Chat.Id, message, ParseMode.Html, replyMarkup: keyboard);
-                    }
                     break;
+            }
+            try {
+                await botClient.EditMessageText(msg.Chat.Id, msg.Id, message, ParseMode.Html,
+                    replyMarkup: keyboard);
+            }
+            catch (Exception) {
+                await botClient.SendMessage(msg.Chat.Id, message, ParseMode.Html, replyMarkup: keyboard);
             }
         }
     }

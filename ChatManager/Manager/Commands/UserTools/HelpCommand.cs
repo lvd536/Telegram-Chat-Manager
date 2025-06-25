@@ -9,7 +9,7 @@ public static class HelpCommand
     public static async Task HelpCmd(ITelegramBotClient botClient, Message msg)
     {
         var helpMessage = 
-            "<b>🤖 Chat Manager Bot V2.5 - Полное руководство</b>\n\n" +
+            "<b>🤖 Chat Manager Bot V3 Optimized - Полное руководство</b>\n\n" +
             
             "<b>📋 Основная информация:</b>\n" +
             "<blockquote>Бот предназначен для управления чатом, отслеживания активности пользователей и модерации. Имеет расширенную систему фильтрации и аналитики.</blockquote>\n\n" +
@@ -71,9 +71,6 @@ public static class HelpCommand
         var keyboard = new InlineKeyboardMarkup()
             .AddButton("Топ", "TopByLevel")
             .AddButton("Узнать свой TG ID", "IdCall");
-            /*.AddNewRow()
-            .AddButton("Профиль", "Profile")
-            .AddButton("Статистика", "Stats");*/
         
         await botClient.SendMessage(msg.Chat.Id, helpMessage, ParseMode.Html, replyMarkup: keyboard);
     }

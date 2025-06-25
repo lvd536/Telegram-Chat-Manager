@@ -1,5 +1,6 @@
 ﻿using ChatManager.Manager;
 using ChatManager.Manager.Commands;
+using ChatManager.Manager.Commands.UserTools;
 using ChatManager.Manager.Commands.AdminTools;
 using ChatManager.Manager.Commands.AdminTools.CreatorCommands;
 using ChatManager.Manager.Commands.Games;
@@ -124,9 +125,6 @@ public class OnMessageService
                         break;
                     case "/chance":
                         await ChanceCommand.ChanceCommandAsync(_bot, msg);
-                        break;
-                    case "/quote":
-                        await QuoteCommand.QuoteCommandAsync(_bot, msg);
                         break;
                     case "/editLevel":
                         if (int.TryParse(argument, out int editLevelValue))

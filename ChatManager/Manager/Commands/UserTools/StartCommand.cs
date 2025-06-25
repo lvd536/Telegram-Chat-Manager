@@ -15,7 +15,7 @@ public static class StartCommand
         var welcomeMessage = 
             $"<b>👋 Добро пожаловать, {msg.From.FirstName}!</b>\n\n" +
             
-            "<b>🤖 Chat Manager Bot V2.5</b>\n" +
+            "<b>🤖 Chat Manager Bot V3 Optimized</b>\n" +
             "<blockquote>Ваш умный помощник в управлении чатом и отслеживании активности пользователей!</blockquote>\n\n" +
             
             "<b>⚡️ Основные возможности:</b>\n" +
@@ -51,9 +51,6 @@ public static class StartCommand
         var keyboard = new InlineKeyboardMarkup()
             .AddButton("Топ", "TopByLevel")
             .AddButton("Узнать свой TG ID", "IdCall");
-            /*.AddNewRow()
-            .AddButton("Профиль", "Profile")
-            .AddButton("Помощь", "Help");*/
             
         await botClient.SendMessage(msg.Chat.Id, welcomeMessage, ParseMode.Html, replyMarkup: keyboard);
     }

@@ -14,18 +14,9 @@ public static class MessageCounter
         {
             var userData = await DbMethods.GetUserDataAsync(db, msg);
             var currentUser = await DbMethods.GetUserAsync(msg, userData);
-
-            currentUser.Messages++;
-            if (type == MessageType.Audio) currentUser.AudioMessages++;
-            else if (type == MessageType.Text) currentUser.TextMessages++;
-            else if (type == MessageType.Video) currentUser.VideoMessages++;
-            else if (type == MessageType.Sticker) currentUser.StickerMessages++;
-            else if (type == MessageType.Photo) currentUser.PhotoMessages++;
-            else if (type == MessageType.Location) currentUser.LocationMessages++;
-            else if (type == MessageType.Voice) currentUser.VoiceMessages++;
-            else if (type == MessageType.VideoNote) currentUser.VideoNotesMessages++;
-            else if (type == MessageType.Animation) currentUser.AnimationMessages++;
-            else currentUser.OtherMessages++;
+            
+            await UpdateMessageCounter(currentUser, type);
+            
             currentUser.Points += CalculatePoints(type, msg);
             if (currentUser.Points >= CalculateLevel(currentUser.Level))
             {
@@ -35,6 +26,21 @@ public static class MessageCounter
             }
             await db.SaveChangesAsync();
         }
+    }
+
+    private static async Task UpdateMessageCounter(EntityList.User currentUser, MessageType type)
+    {
+        currentUser.Messages++;
+        if (type == MessageType.Audio) currentUser.AudioMessages++;
+        else if (type == MessageType.Text) currentUser.TextMessages++;
+        else if (type == MessageType.Video) currentUser.VideoMessages++;
+        else if (type == MessageType.Sticker) currentUser.StickerMessages++;
+        else if (type == MessageType.Photo) currentUser.PhotoMessages++;
+        else if (type == MessageType.Location) currentUser.LocationMessages++;
+        else if (type == MessageType.Voice) currentUser.VoiceMessages++;
+        else if (type == MessageType.VideoNote) currentUser.VideoNotesMessages++;
+        else if (type == MessageType.Animation) currentUser.AnimationMessages++;
+        else currentUser.OtherMessages++;
     }
     private static long CalculatePoints(MessageType type, Message message)
     {

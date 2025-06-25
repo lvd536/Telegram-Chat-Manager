@@ -26,6 +26,7 @@ public static class UserInfoCommand
             if (currentUser?.Kick is null) currentUser.Kick = new EntityList.Kick();
             if (currentUser?.Mutes is null) currentUser.Mutes = new List<EntityList.Mute>();
             if (currentUser?.Warns is null) currentUser.Warns = new List<EntityList.Warn>();
+            
             var banDetails = currentUser.Ban.Description == String.Empty ? "Не имеет банов" : currentUser.Ban.Description;
             var kickDetails = currentUser.Kick.Description == String.Empty ? "Не имеет киков" : currentUser.Kick.Description;
             var muteDetails = string.Empty;
