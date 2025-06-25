@@ -20,15 +20,15 @@ internal class Program
             .Build();
         
         var botToken = configuration.GetSection("BotConfiguration:launchType").Value == "1" ? configuration.GetSection("BotConfiguration:prodToken").Value : configuration.GetSection("BotConfiguration:devToken").Value;
-        if (string.IsNullOrEmpty(botToken))
-        {
-            throw new ArgumentNullException("Bot token is not configured in appsettings.json");
-        }
-
+        if (string.IsNullOrEmpty(botToken)) throw new ArgumentNullException("Bot token is not configured in appsettings.json");
+        var openRouterApiKey = configuration.GetSection("OtherSettings:OpenRouterKey").Value;
+        if (string.IsNullOrEmpty(openRouterApiKey)) throw new ArgumentNullException("OpenRouterKey is not configured in appsettings.json");
+        
         _cts = new CancellationTokenSource();
         _bot = new TelegramBotClient(botToken, cancellationToken: _cts.Token);
+        var aiService = new AiService(openRouterApiKey, _bot);
         
-        var onMessageService = new OnMessageService(_bot);
+        var onMessageService = new OnMessageService(_bot, aiService);
         var onCallbackQuery = new OnCallbackQueryService(_bot);
         var onErrorService = new OnErrorService(_cts, _bot);
         

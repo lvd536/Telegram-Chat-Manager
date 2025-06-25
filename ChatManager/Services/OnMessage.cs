@@ -14,9 +14,11 @@ namespace ChatManager.Services;
 public class OnMessageService
 {
     private static TelegramBotClient _bot = null!;
-    public OnMessageService(TelegramBotClient botClient)
+    private static AiService _aiService = null!;
+    public OnMessageService(TelegramBotClient botClient, AiService aiService)
     {
         _bot = botClient;
+        _aiService = aiService;
     }
     
     public async Task OnMessage(Message msg, UpdateType type)
@@ -139,6 +141,9 @@ public class OnMessageService
                     case "/weather":
                         var weather = new WeatherCommand();
                         await weather.WeatherCmd(_bot, msg);
+                        break;
+                    case "/ai":
+                        await AICommand.AiCmd(_bot, msg, _aiService);
                         break;
                 }
             }
