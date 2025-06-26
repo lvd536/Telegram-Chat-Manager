@@ -130,13 +130,13 @@ public class OnMessageService
                     case "/chance":
                         await ChanceCommand.ChanceCommandAsync(_bot, msg);
                         break;
-                    case "/editLevel":
+                    case "/editlevel":
                         if (int.TryParse(argument, out int editLevelValue))
                         {
                             await SetLevelCommand.SetLevelAsync(_bot, msg, editLevelValue);
                         }
                         break;
-                    case "/checkLevel":
+                    case "/checklevel":
                         await CheckLevelCommand.CheckUserLevel(_bot, msg);
                         break;
                     case "/weather":
