@@ -25,7 +25,8 @@ public class OnErrorService
             string fileName = frame.GetFileName() ?? "unknown file";
             string methodName = frame.GetMethod()?.Name ?? "unknown name";
             string date = $"Date: {DateTime.Now:dd.MM.yyyy HH:mm:ss}";
-            string message = $"Исключение в {methodName}, файл {fileName}, строка {lineNumber}";
+            string description = $"Exception: {exception.Message}";
+            string message = $"Исключение в {methodName}, файл {fileName}, строка {lineNumber}\nОписание:{description}";
             Console.WriteLine(message);
             await _bot.SendMessage(_ownerId, $"[Error Handler - {date}] " + message);
         }

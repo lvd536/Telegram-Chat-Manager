@@ -32,6 +32,7 @@ public class EntityList
         public short AiRequests { get; set; }
         public bool IsAdmin { get; set; }
         public Chat Chat { get; set; } = null!;
+        public DateTime LastRequestsReach { get; set; }
         public List<Warn> Warns { get; set; } = new List<Warn>();
         public List<Mute> Mutes { get; set; } = new List<Mute>();
         public Ban Ban { get; set; } = null!;

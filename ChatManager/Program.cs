@@ -72,7 +72,9 @@ internal class Program
             { "/editlevel", "Изменить уровень (админ)" },
             { "/checklevel", "Проверить уровень" },
             { "/weather", "Погода в Самаре" },
-            { "/ai", "Чат с ИИ. Принимает текст или фото" }
+            { "/ai", "Чат с ИИ. Принимает текст или фото" },
+            {"/limits", "Просмотр лимитов по запросам для нейросети" },
+            {"/addreq", "Выдать AI запросы пользователю (админ)" }
         };
 
         commands.AddRange(commandList.Select(cmd => new BotCommand { Command = cmd.Key, Description = cmd.Value }));

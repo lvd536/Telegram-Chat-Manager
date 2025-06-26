@@ -35,6 +35,7 @@ public static class DbMethods
                 {
                     UserName = message.From.FirstName,
                     UserId = message.From.Id,
+                    AiRequests = 10,
                     IsAdmin = false
                 };
                 userData?.Users.Add(newUser);
