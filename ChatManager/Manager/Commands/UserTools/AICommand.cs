@@ -6,7 +6,7 @@ namespace ChatManager.Manager.Commands.UserTools;
 
 public static class AICommand
 {
-    public static async Task AiCmd(ITelegramBotClient botClient, Message msg, AiService service)
+    public static async Task AiCmd(Message msg, AiService service)
     {
         if (msg.Text != null)
         {
@@ -16,5 +16,10 @@ public static class AICommand
         {
             await service.ProcessImageMessage(msg);
         }
+    }
+
+    public static async Task CheckLimitsCmd(Message msg, AiService service)
+    {
+        await service.SendCheckLimitsRequest(msg);
     }
 }

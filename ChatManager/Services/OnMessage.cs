@@ -25,7 +25,7 @@ public class OnMessageService
     {
         await MessageCounter.MessageCounterAsync(_bot, msg, msg.Type);
         await WordsAnalyzer.MessageAnalyzer(_bot, msg);
-        if (msg.Caption is not null && msg.Caption.StartsWith("/ai") && msg.Type == MessageType.Photo) await AICommand.AiCmd(_bot, msg, _aiService);
+        if (msg.Caption is not null && msg.Caption.StartsWith("/ai") && msg.Type == MessageType.Photo) await AICommand.AiCmd(msg, _aiService);
         if (msg.Text is null) return;
         var commandParts = msg.Text.Split(' ');
         var command = commandParts[0];
@@ -144,7 +144,10 @@ public class OnMessageService
                         await weather.WeatherCmd(_bot, msg);
                         break;
                     case "/ai":
-                        await AICommand.AiCmd(_bot, msg, _aiService);
+                        await AICommand.AiCmd(msg, _aiService);
+                        break;
+                    case "/limits":
+                        await AICommand.CheckLimitsCmd(msg, _aiService);
                         break;
                 }
             }

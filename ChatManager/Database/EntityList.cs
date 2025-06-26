@@ -29,6 +29,7 @@ public class EntityList
         public long Points { get; set; }
         public long UserId { get; set; }
         public int ChatId { get; set; }
+        public short AiRequests { get; set; }
         public bool IsAdmin { get; set; }
         public Chat Chat { get; set; } = null!;
         public List<Warn> Warns { get; set; } = new List<Warn>();

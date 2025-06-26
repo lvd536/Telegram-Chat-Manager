@@ -6,7 +6,7 @@ namespace ChatManager.Services;
 
 public class OnErrorService
 {
-    private static readonly string _ownerId = "1016623551";
+    public static readonly string _ownerId = "1016623551";
     private static CancellationTokenSource _cts = null!;
     private static TelegramBotClient _bot = null!;
     public OnErrorService(CancellationTokenSource cancellationTokenSource, TelegramBotClient botClient)

@@ -1,14 +1,8 @@
-﻿using System;
-using System.IO;
-using System.Linq;
-using System.Net.Http;
-using System.Text;
+﻿using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
-using UglyToad.PdfPig;
 
 namespace ChatManager.Services;
 
@@ -92,6 +86,50 @@ public class AiService
 
         await SendRequestAndEditMessage(payload, statusMessage);
     }
+    
+    public async Task SendCheckLimitsRequest(Message msg)
+    {
+        try
+        {
+            using var httpClient = new HttpClient();
+            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {_apiKey}");
+
+            var response = await httpClient.GetAsync("https://openrouter.ai/api/v1/auth/key");
+            if (!response.IsSuccessStatusCode)
+            {
+                var error = await response.Content.ReadAsStringAsync();
+                await _bot.SendMessage(
+                    msg.Chat.Id,
+                    $"❌ Ошибка {(int)response.StatusCode}: {error}"
+                );
+                return;
+            }
+
+            var responseJson = await response.Content.ReadAsStringAsync();
+            using var doc = JsonDocument.Parse(responseJson);
+
+            var dataElement = doc.RootElement.GetProperty("data");
+            int usage = dataElement.GetProperty("usage").GetInt32();
+            int? limit = dataElement.GetProperty("limit").ValueKind == JsonValueKind.Null ? null : dataElement.GetProperty("limit").GetInt32();
+            bool isFreeTier = dataElement.GetProperty("is_free_tier").GetBoolean();
+
+            string answer = $"🔑 Ключ: <b>secret</b>\n" +
+                            $"🔄 Использовано: {usage}\n" +
+                            $"📊 Лимит: {(limit.HasValue ? limit.ToString() : "∞")}\n" +
+                            $"🎟️ Бесплатный тариф: {(isFreeTier ? "Да" : "Нет")}";
+
+            await _bot.SendMessage(msg.Chat.Id, answer, ParseMode.Html);
+        }
+        catch (JsonException jsonEx)
+        {
+            await _bot.SendMessage(msg.Chat.Id, $"📛 Ошибка парсинга JSON: {jsonEx.Message}");
+        }
+        catch (Exception ex)
+        {
+            await _bot.SendMessage(msg.Chat.Id, $"⚠️ Ошибка: {ex.Message}");
+        }
+    }
+    
     private static async Task SendRequestAndEditMessage(object payload, Message statusMessage)
     {
         try
