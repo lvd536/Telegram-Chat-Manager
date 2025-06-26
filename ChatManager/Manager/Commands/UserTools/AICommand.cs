@@ -37,9 +37,15 @@ public static class AICommand
 
     public static async Task AddRequestsCmd(ITelegramBotClient botClient, Message msg, short value)
     {
+        if (msg.From is null) return;
         if (msg.ReplyToMessage == null)
         {
             await botClient.SendMessage(msg.Chat.Id, "Используйте ответ на сообщение пользователя, которому хотите выдать запросы!");
+            return;
+        }
+        if (OnErrorService._ownerId != msg.From.Id)
+        {
+            await botClient.SendMessage(msg.Chat.Id, "Эту комманду может использовать только создатель бота!");
             return;
         }
         using (ApplicationContext db = new ApplicationContext())

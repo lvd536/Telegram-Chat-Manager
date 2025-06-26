@@ -57,7 +57,7 @@ public static class HelpCommand
             "<blockquote>• /ai [сообщение] - Отправить вопрос AI\n" +
             "• /ai [фото] [сообщение (optional)] - Отправить AI фото с/без вопросом\n" +
             "• /limits - Просмотр ограничений по запросам к AI\n" +
-            "• /addreq - Выдать запросы пользователю (bot owner only)\n" +
+            "• /addreq - Выдать запросы пользователю (bot owner only)\n</blockquote>" +
             
             "<b>⚠️ Система предупреждений:</b>\n" +
             "<blockquote>• 3 предупреждения = бан на 3 дня\n" +
