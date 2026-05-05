@@ -10,8 +10,7 @@ using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
 using var cts = new CancellationTokenSource();
-var bot = new TelegramBotClient("8048549299:AAG3MDOkOODjP5n4-P5VqNI7dwp0r4smkuQ", cancellationToken: cts.Token);
-// 7975559064:AAEznAlv6y4xF60E644JzJEZKeWOOPGVjVg - chat manager stoshka
+var bot = new TelegramBotClient("TOKEN", cancellationToken: cts.Token);
 var me = await bot.GetMe();
 var weather = new WeatherCommand();
 bot.OnMessage += OnMessage;
